@@ -1,6 +1,5 @@
 #! /usr/bin/env node
 
-const path = require('path')
 const { NodeSSH } = require('node-ssh')
 const { program } = require('commander')
 const YAML = require('yaml')
@@ -23,15 +22,13 @@ program.command('push')
 
     const ssh = new NodeSSH()
 
-    const dockerComposeFilePath = path.join(config.dockerCompose.path, config.dockerCompose.fileName)
-
     try {
       await ssh.connect({ ...config.ssh })
-      const { stdout: yml } = await ssh.execCommand(`cat ${dockerComposeFilePath}`)
+      const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.path}/${config.dockerCompose.fileName}`)
       const json = YAML.parse(yml)
       const { image } = json.services[name]
-      await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${dockerComposeFilePath}`)
-      await ssh.execCommand(`cd ${config.dockerCompose.path} && docker compose up -d ${name}`)
+      await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.path}/${config.dockerCompose.fileName}`)
+      await ssh.execCommand(`cd ${config.dockerCompose.path} && docker-compose up -d ${name}`)
       ssh.dispose()
     } catch (error) {
       throw new Error(error)
