@@ -1,0 +1,20 @@
+{
+  "name": "go-dude",
+  "version": "0.0.2",
+  "description": "",
+  "bin": {
+    "dude": "./bin/dude.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "fs-extra": "^11.1.0",
+    "node-ssh": "^13.0.0",
+    "yaml": "^2.1.3"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^12.0.0",
+    "eslint": "^8.28.0"
+  }
+}
