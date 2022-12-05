@@ -8,7 +8,9 @@ const configFilePath = (type = ConfigType.JSON) => path.join(process.cwd(), Conf
 
 const existConfigSync = (type = ConfigType.JSON) => fs.existsSync(configFilePath(type))
 
-const loadProjectName = config => config.name || fs.readJSONSync(path.join(process.cwd(), 'package.json')).name
+const getProjectName = config => config.name || fs.readJSONSync(path.join(process.cwd(), 'package.json')).name
+
+const getDockerComposeFilePath = config => path.dirname(config.dockerCompose.file)
 
 const parseJson = async () => {
   return await fs.readJSONSync(configFilePath(ConfigType.JSON))
@@ -21,7 +23,8 @@ const throwError = (error) => {
 }
 
 module.exports = {
-  loadProjectName,
+  getProjectName,
+  getDockerComposeFilePath,
   existConfigSync,
   parseJson,
   throwError

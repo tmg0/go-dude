@@ -1,18 +1,19 @@
 #! /usr/bin/env node
 
-const path = require('path')
 const { NodeSSH } = require('node-ssh')
 const { program } = require('commander')
 const YAML = require('yaml')
 const { version } = require('../package.json')
 const { ConfigType } = require('./enums')
-const { existConfigSync, parseJson, loadProjectName, throwError } = require('./utils')
+const { existConfigSync, parseJson, getProjectName, getDockerComposeFilePath, throwError } = require('./utils')
 
 program.command('push')
   .version(version)
   .description('Push image to docker-compose file by ssh.')
   .argument('<string>', 'Image URL')
-  .action(async (str) => {
+  .option('-D --docker', 'Push docker image.')
+  .option('-C --config <char>', 'Declare dude config file.')
+  .action(async (str, option) => {
     let config
 
     if (existConfigSync(ConfigType.JSON)) {
@@ -21,7 +22,7 @@ program.command('push')
 
     if (!config) { throwError('Do not exist available config file.') }
 
-    const name = loadProjectName(config)
+    const name = getProjectName(config)
 
     if (!name) { throwError('Please declare a project name in config file or package.json.') }
 
@@ -33,7 +34,7 @@ program.command('push')
       const json = YAML.parse(yml)
       const { image } = json.services[name]
       await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
-      await ssh.execCommand(`cd ${path.dirname(config.dockerCompose.file)} && docker-compose up -d ${name}`)
+      await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
     } catch (error) {
       throwError(error)
     } finally {
