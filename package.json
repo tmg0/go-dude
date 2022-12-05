@@ -6,7 +6,7 @@
     "dude": "./bin/dude.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "commander": "^9.4.1",
     "consola": "^2.15.3",
