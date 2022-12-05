@@ -15,6 +15,7 @@ const parseJson = async () => {
 }
 
 const throwError = (error) => {
+  // @ts-ignore
   consola.error(new Error(error))
   process.exit()
 }
