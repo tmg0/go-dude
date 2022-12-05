@@ -49,3 +49,6 @@ Options:
   -V, --version  output the version number
   -h, --help     display help for command
 ```
+
+## License
+[MIT](./LICENSE)
