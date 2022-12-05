@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^9.4.1",
+    "consola": "^2.15.3",
     "fs-extra": "^11.1.0",
     "node-ssh": "^13.0.0",
     "yaml": "^2.1.3"

@@ -3,6 +3,7 @@
 const { NodeSSH } = require('node-ssh')
 const { program } = require('commander')
 const YAML = require('yaml')
+const consola = require('consola')
 const { version } = require('../package.json')
 const { ConfigType } = require('./enums')
 const { existConfigSync, parseJson, loadProjectName } = require('./utils')
@@ -18,6 +19,11 @@ program.command('push')
       config = parseJson()
     }
 
+    if (!config) {
+      consola.error(new Error('Do not exist available config file.'))
+      return
+    }
+
     const name = loadProjectName(config)
 
     const ssh = new NodeSSH()
@@ -31,7 +37,7 @@ program.command('push')
       await ssh.execCommand(`cd ${config.dockerCompose.path} && docker-compose up -d ${name}`)
       ssh.dispose()
     } catch (error) {
-      throw new Error(error)
+      consola.error(new Error(error))
     }
   })
 
