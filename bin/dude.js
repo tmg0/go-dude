@@ -12,6 +12,7 @@ program.command('push')
   .description('Push image to docker-compose file by ssh.')
   .argument('<string>', 'Image URL')
   .option('-D --docker', 'Push docker image.')
+  .option('-K --k8s', 'Push k8s image.')
   .option('-C --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
     let config
@@ -30,11 +31,18 @@ program.command('push')
 
     try {
       await ssh.connect({ ...config.ssh })
-      const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
-      const json = YAML.parse(yml)
-      const { image } = json.services[name]
-      await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
-      await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
+
+      if (option.docker) {
+        const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
+        const json = YAML.parse(yml)
+        const { image } = json.services[name]
+        await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
+        await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
+      }
+
+      if (option.k8s) {
+        // const
+      }
     } catch (error) {
       throwError(error)
     } finally {
@@ -42,4 +50,4 @@ program.command('push')
     }
   })
 
-program.parse()
+program.parse(process.argv)
