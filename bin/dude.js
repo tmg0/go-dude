@@ -41,7 +41,7 @@ program.command('push')
       }
 
       if (option.k8s) {
-        // const
+        await ssh.execCommand(`kubectl -n ${config.k8s.namespace} set image deploy ${config.k8s.deployment} *=${str}`)
       }
     } catch (error) {
       throwError(error)
