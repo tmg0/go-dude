@@ -4,17 +4,16 @@ import { NodeSSH } from 'node-ssh'
 import { program } from 'commander'
 import YAML from 'yaml'
 import { version } from '../package.json'
-import { parseJson, getProjectName, getDockerComposeFilePath, throwError } from './utils'
+import { parseConf, getProjectName, getDockerComposeFilePath, throwError } from './utils'
 
 program.command('push')
   .version(version)
   .description('Push image to docker-compose file by ssh.')
   .argument('<string>', 'Image URL')
   .option('-D --docker', 'Push docker image.')
-  .option('-K --k8s', 'Push k8s image.')
   .option('-C --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
-    const config = await parseJson()
+    const config = await parseConf()
 
     if (!config) { throwError('Do not exist available config file.') }
 
@@ -33,10 +32,6 @@ program.command('push')
         const { image } = json.services[name]
         await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
         await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
-      }
-
-      if (option.k8s) {
-        await ssh.execCommand(`kubectl -n ${config.k8s.namespace} set image deploy ${config.k8s.deployment} *=${str}`)
       }
     } catch (error) {
       throwError(error)
