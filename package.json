@@ -5,10 +5,7 @@
   "bin": {
     "dude": "./bin/dude.js"
   },
-  "scripts": {
-    "build": "tsup src/index.ts --format cjs --minify"
-  },
-  "author": "",
+  "author": "zekun.jin",
   "license": "MIT",
   "dependencies": {
     "commander": "^9.4.1",
@@ -18,8 +15,10 @@
     "yaml": "^2.1.3"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config": "^12.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "eslint": "^8.28.0",
-    "tsup": "^6.5.0"
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5",
+    "vitest": "^0.28.5"
   }
 }
