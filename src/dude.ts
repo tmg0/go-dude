@@ -4,7 +4,7 @@ import { NodeSSH } from 'node-ssh'
 import { program } from 'commander'
 import YAML from 'yaml'
 import { version } from '../package.json'
-import { parseConf, getProjectName, getDockerComposeFilePath, throwError } from './utils'
+import { readConf, getProjectName, getDockerComposeFilePath, throwError } from './utils'
 
 program.command('push')
   .version(version)
@@ -13,7 +13,7 @@ program.command('push')
   .option('-D --docker', 'Push docker image.')
   .option('-C --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
-    const config = await parseConf()
+    const config = await readConf(option.config)
 
     if (!config) { throwError('Do not exist available config file.') }
 
