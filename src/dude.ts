@@ -10,8 +10,7 @@ program.command('push')
   .version(version)
   .description('Push image to docker-compose file by ssh.')
   .argument('<string>', 'Image URL')
-  .option('-D --docker', 'Push docker image.')
-  .option('-C --config <char>', 'Declare dude config file.')
+  .option('-c --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
     const config = await readConf(option.config)
 
@@ -26,13 +25,11 @@ program.command('push')
     try {
       await ssh.connect({ ...config.ssh })
 
-      if (option.docker) {
-        const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
-        const json = YAML.parse(yml)
-        const { image } = json.services[name]
-        await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
-        await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
-      }
+      const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
+      const json = YAML.parse(yml)
+      const { image } = json.services[name]
+      await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
+      await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
     } catch (error) {
       throwError(error)
     } finally {
