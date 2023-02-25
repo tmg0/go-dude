@@ -1,9 +1,14 @@
 {
   "name": "go-dude",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "bin": {
-    "dude": "./bin/dude.js"
+    "dude": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest"
   },
   "author": "zekun.jin",
   "license": "MIT",
@@ -16,6 +21,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
+    "@types/fs-extra": "^11.0.1",
     "eslint": "^8.28.0",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",
