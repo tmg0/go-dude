@@ -1,5 +1,5 @@
 interface DudeConfig {
-  name: string
+  name?: string
   dockerCompose: {
     file: string
   },

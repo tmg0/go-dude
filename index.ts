@@ -1,10 +1,11 @@
 #! /usr/bin/env node
 
 import { NodeSSH } from 'node-ssh'
+import consola from 'consola'
 import { program } from 'commander'
 import YAML from 'yaml'
 import { version } from './package.json'
-import { readConf, getProjectName, getDockerComposeFilePath, throwError } from './src/utils'
+import { readConf, readName, getDockerComposeFilePath } from './src/utils'
 
 program.command('push')
   .version(version)
@@ -13,12 +14,7 @@ program.command('push')
   .option('-c --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
     const config = await readConf(option.config)
-
-    if (!config) { throwError('Do not exist available config file.') }
-
-    const name = getProjectName(config)
-
-    if (!name) { throwError('Please declare a project name in config file or package.json.') }
+    const name = await readName(config)
 
     const ssh = new NodeSSH()
 
@@ -27,11 +23,15 @@ program.command('push')
 
       const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
       const json = YAML.parse(yml)
-      const { image } = json.services[name]
-      await ssh.execCommand(`sed -i 's|${image}|${str}|g' ${config.dockerCompose.file}`)
+      const service = json.services[name]
+
+      if (!service) { throw new Error(`Cannot find a service named: ${name}`) }
+
+      await ssh.execCommand(`sed -i 's|${service.image}|${str}|g' ${config.dockerCompose.file}`)
       await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
     } catch (error) {
-      throwError(error)
+      consola.error(error)
+      throw error
     } finally {
       ssh.dispose()
     }

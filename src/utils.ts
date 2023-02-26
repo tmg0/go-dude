@@ -1,18 +1,39 @@
 import { dirname, join } from 'pathe'
 import consola from 'consola'
-import { readJSONSync } from 'fs-extra'
+import { readJson } from 'fs-extra'
 import { CONFIG_FILENAME } from './consts'
 
-export const getProjectName = (config: DudeConfig) => config.name || readJSONSync(join(process.cwd(), 'package.json')).name
+export const readName = async (config: DudeConfig): Promise<string> => {
+  if (config.name) { return config.name }
+  const path = join(process.cwd(), 'package.json')
 
-export const getDockerComposeFilePath = (config: DudeConfig) => dirname(config.dockerCompose.file)
+  try {
+    const name = (await readJson(path))?.name
+    if (name) { return name }
 
-export const readConf = (path = '.'): Promise<DudeConfig> => {
-  path = join(process.cwd(), path, CONFIG_FILENAME)
-  return readJSONSync(path)
+    const message = 'Please declare a project name in config file or package.json.'
+    consola.error(message)
+    throw new Error(message)
+  } catch (error) {
+    consola.error(error)
+    throw error
+  }
 }
 
-export const throwError = (error: any) => {
-  consola.error(new Error(error))
-  process.exit()
+export const getDockerComposeFilePath = (config: DudeConfig) => {
+  if (config.dockerCompose.file) { return dirname(config.dockerCompose.file) }
+
+  const message = 'Please declare the docker compose file path.'
+  consola.error(message)
+  throw new Error(message)
+}
+
+export const readConf = (path = '.'): Promise<DudeConfig> => {
+  try {
+    path = join(process.cwd(), path, CONFIG_FILENAME)
+    return readJson(path)
+  } catch (error) {
+    consola.error(error)
+    throw error
+  }
 }
