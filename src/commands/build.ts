@@ -1,7 +1,9 @@
 
 import { program } from 'commander'
+import { nanoid } from 'nanoid'
+import { join } from 'pathe'
 import { version } from '../../package.json'
-import { execAsync, getDockerfilePath, readConf, readName } from '../utils'
+import { execAsync, existDockerfile, readConf, readName } from '../utils'
 
 program.command('build')
   .version(version)
@@ -13,5 +15,12 @@ program.command('build')
 
     await execAsync(config.build.script)
 
-    await execAsync(`docker build -t ${name} ${await getDockerfilePath()}`)
+    const tag = nanoid()
+    const img = `${name}:${tag}`
+
+    const cwd = process.cwd()
+
+    await execAsync(existDockerfile() ? `docker build -f ${cwd}/Dockerfile -t ${img} .` : `docker build -t ${img} .`)
+
+    await execAsync(`docker save -o ${join(process.cwd(), 'images', `${img}.tar`)} ${img}`)
   })

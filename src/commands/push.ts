@@ -1,9 +1,8 @@
-import { NodeSSH } from 'node-ssh'
 import consola from 'consola'
 import { program } from 'commander'
 import YAML from 'yaml'
 import { version } from '../../package.json'
-import { readConf, readName, getDockerComposeFilePath } from '../utils'
+import { readConf, readName, getDockerComposeFilePath, sshConnect } from '../utils'
 
 program.command('push')
   .version(version)
@@ -14,11 +13,9 @@ program.command('push')
     const config = await readConf(option.config)
     const name = await readName(config)
 
-    const ssh = new NodeSSH()
+    const ssh = sshConnect(config)
 
     try {
-      await ssh.connect({ ...config.ssh })
-
       const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
       const json = YAML.parse(yml)
       const service = json.services[name]

@@ -1,7 +1,8 @@
 import { exec } from 'node:child_process'
-import { dirname, join, relative } from 'pathe'
+import { dirname, join } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
+import { NodeSSH } from 'node-ssh'
 import { CONFIG_FILENAME } from './consts'
 
 export const readName = async (config: DudeConfig): Promise<string> => {
@@ -52,10 +53,14 @@ export const execAsync = (cmd: string) => {
   })
 }
 
-export const getDockerfilePath = async () => {
-  const exist = await fse.pathExists(join(process.cwd(), 'Dockerfile'))
+export const existDockerfile = () => {
+  return fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
+}
 
-  if (!exist) { return '.' }
+export const sshConnect = (config: DudeConfig) => {
+  const ssh = new NodeSSH()
 
-  return relative('.', process.cwd()) || '.'
+  ssh.connect({ ...config.ssh })
+
+  return ssh
 }
