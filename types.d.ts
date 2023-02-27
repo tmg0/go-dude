@@ -7,6 +7,7 @@ interface DudeConfig {
     host: string
     username: string
     password: string
+    port: number
   }
   build: {
     script: string

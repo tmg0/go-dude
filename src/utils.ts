@@ -3,6 +3,7 @@ import { dirname, join } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
+import { Client } from 'node-scp'
 import { CONFIG_FILENAME } from './consts'
 
 export const readName = async (config: DudeConfig): Promise<string> => {
@@ -53,14 +54,39 @@ export const execAsync = (cmd: string) => {
   })
 }
 
-export const existDockerfile = () => {
-  return fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
-}
-
 export const sshConnect = (config: DudeConfig) => {
   const ssh = new NodeSSH()
 
   ssh.connect({ ...config.ssh })
 
   return ssh
+}
+
+export const dockerBuild = (name: string, tag: string) => {
+  const img = `${name}:${tag}`
+  const cwd = process.cwd()
+  const exist = fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
+  return execAsync(exist ? `docker build -f ${cwd}/Dockerfile -t ${img} .` : `docker build -t ${img} .`)
+}
+
+export const dockerSaveImage = (name: string, tag: string) => {
+  const img = `${name}:${tag}`
+  const dir = join(process.cwd(), '.images')
+  if (!fse.pathExistsSync(dir)) { fse.mkdir(dir) }
+  return execAsync(`docker save ${img} -o ${join(dir, `${tag}.tar`)}`)
+}
+
+export const dockerRemoveImage = (name: string, tag: string) => {
+  return execAsync(`docker image rm ${name}:${tag}`)
+}
+
+export const upload = async (config: DudeConfig, from: string, to: string) => {
+  const client = await Client({ ...config.ssh })
+  await client.uploadFile(from, to)
+  client.close()
+}
+
+export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
+  const from = join(process.cwd(), '.images', `${tag}.tar`)
+  return upload(config, from, '')
 }
