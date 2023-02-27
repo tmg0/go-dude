@@ -2,5 +2,9 @@
   "ssh": {
     "username": "root",
     "port": 22
+  },
+  "build": {
+    "script": "npm run build",
+    "output": "dist"
   }
 }

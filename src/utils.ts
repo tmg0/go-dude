@@ -1,4 +1,5 @@
-import { dirname, join } from 'pathe'
+import { exec } from 'node:child_process'
+import { dirname, join, relative } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
 import { CONFIG_FILENAME } from './consts'
@@ -36,4 +37,25 @@ export const readConf = (path = '.'): Promise<DudeConfig> => {
     consola.error(error)
     throw error
   }
+}
+
+export const execAsync = (cmd: string) => {
+  return new Promise((resolve, reject) => {
+    exec(cmd, (error, stdout) => {
+      if (error) {
+        reject(error)
+        return
+      }
+      consola.info(stdout)
+      resolve(stdout)
+    })
+  })
+}
+
+export const getDockerfilePath = async () => {
+  const exist = await fse.pathExists(join(process.cwd(), 'Dockerfile'))
+
+  if (!exist) { return '.' }
+
+  return relative('.', process.cwd()) || '.'
 }
