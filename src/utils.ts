@@ -68,3 +68,8 @@ export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
   const from = join(process.cwd(), '.images', filename)
   return upload(config, from, `/images/${filename}`)
 }
+
+export const execBuildScript = async (config: DudeConfig) => {
+  await execAsync(config.build.script)
+  consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
+}
