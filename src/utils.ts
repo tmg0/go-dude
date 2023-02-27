@@ -53,11 +53,9 @@ export const execAsync = (cmd: string) => {
   })
 }
 
-export const sshConnect = (config: DudeConfig) => {
+export const sshConnect = async (config: DudeConfig) => {
   const ssh = new NodeSSH()
-
-  ssh.connect({ ...config.ssh })
-
+  await ssh.connect({ ...config.ssh })
   return ssh
 }
 

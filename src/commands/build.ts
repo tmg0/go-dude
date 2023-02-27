@@ -1,7 +1,5 @@
-
 import { program } from 'commander'
 import { nanoid } from 'nanoid'
-import { NodeSSH } from 'node-ssh'
 import { version } from '../../package.json'
 import { execAsync, dockerBuild, dockerSaveImage, readConf, readName, dockerRemoveImage, uploadImage, sshConnect, dockerLoadImage } from '../utils'
 
@@ -22,14 +20,8 @@ program.command('build')
     await dockerRemoveImage(name, tag)
     await uploadImage(config, name, tag)
 
-    const ssh = new NodeSSH()
+    const ssh = await sshConnect(config)
 
-    ssh.connect({ ...config.ssh })
-
-    // await dockerLoadImage(ssh, name, tag)
-    const cmd = `docker load -i /images/${tag}.tar`
-    console.log(cmd)
-    const res = await ssh.execCommand(`docker load -i /images/${tag}.tar`)
-    console.log(res)
+    await dockerLoadImage(ssh, name, tag)
     ssh.dispose()
   })

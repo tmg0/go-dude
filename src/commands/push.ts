@@ -13,7 +13,7 @@ program.command('push')
     const config = await readConf(option.config)
     const name = await readName(config)
 
-    const ssh = sshConnect(config)
+    const ssh = await sshConnect(config)
 
     try {
       const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
