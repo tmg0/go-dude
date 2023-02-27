@@ -1,6 +1,6 @@
 import { dirname, join } from 'pathe'
 import consola from 'consola'
-import { readJson } from 'fs-extra'
+import fse from 'fs-extra'
 import { CONFIG_FILENAME } from './consts'
 
 export const readName = async (config: DudeConfig): Promise<string> => {
@@ -8,7 +8,7 @@ export const readName = async (config: DudeConfig): Promise<string> => {
   const path = join(process.cwd(), 'package.json')
 
   try {
-    const name = (await readJson(path))?.name
+    const name = (await fse.readJson(path))?.name
     if (name) { return name }
 
     const message = 'Please declare a project name in config file or package.json.'
@@ -31,7 +31,7 @@ export const getDockerComposeFilePath = (config: DudeConfig) => {
 export const readConf = (path = '.'): Promise<DudeConfig> => {
   try {
     path = join(process.cwd(), path, CONFIG_FILENAME)
-    return readJson(path)
+    return fse.readJson(path)
   } catch (error) {
     consola.error(error)
     throw error
