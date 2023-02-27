@@ -9,14 +9,15 @@ export const dockerBuild = async (name: string, tag: string) => {
   const cwd = process.cwd()
   const exist = fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
   await execAsync(exist ? `docker build -f ${cwd}/Dockerfile -t ${img} .` : `docker build -t ${img} .`)
-  consola.success(`Docker build complete, named: ${img}`)
+  consola.success(`Docker build complete, image: ${img}`)
 }
 
-export const dockerSaveImage = (name: string, tag: string) => {
+export const dockerSaveImage = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
   const dir = join(process.cwd(), '.images')
   if (!fse.pathExistsSync(dir)) { fse.mkdir(dir) }
-  return execAsync(`docker save ${img} -o ${join(dir, `${tag}.tar`)}`)
+  await execAsync(`docker save ${img} -o ${join(dir, `${tag}.tar`)}`)
+  consola.success(`Save docker image as tar, filename: ${tag}.tar`)
 }
 
 export const dockerRemoveImageTar = (_name: string, tag: string) => {
