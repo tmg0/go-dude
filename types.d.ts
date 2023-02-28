@@ -17,7 +17,7 @@ interface DudeConfig {
     port: number
   }
   build: {
-    script: string
+    script?: string
     output: string
   }
   repos?: ImageRepo[]

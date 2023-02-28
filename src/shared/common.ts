@@ -70,6 +70,7 @@ export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
 }
 
 export const execBuildScript = async (config: DudeConfig) => {
+  if (!config.build.script) { return }
   await execAsync(config.build.script)
   consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
 }

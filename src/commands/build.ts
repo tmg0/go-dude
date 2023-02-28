@@ -12,9 +12,11 @@ program.command('build')
     const config = await readConf(option.config)
     const name = await readName(config)
 
-    await execBuildScript(config)
+    if (config.build.script) { await execBuildScript(config) }
 
     const tag = await dockerImageTag()
+
+    await dockerBuild(name, tag)
 
     if (config.repos && config.repos.length > 0) {
       await dockerLogin(config)
@@ -23,7 +25,6 @@ program.command('build')
       return
     }
 
-    await dockerBuild(name, tag)
     await dockerSaveImage(name, tag)
     await dockerRemoveImage(name, tag)
     await uploadImage(config, name, tag)
