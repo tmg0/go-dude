@@ -4,7 +4,8 @@ import consola from 'consola'
 import dayjs from 'dayjs'
 import { resolvePath } from 'mlly'
 import { join } from 'pathe'
-import { execAsync } from './common'
+import YAML from 'yaml'
+import { execAsync, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
@@ -80,4 +81,32 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
   }
 
   await Promise.all((config.repos as ImageRepo[]).map(push))
+}
+
+export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
+  const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
+  const json: DockerCompose = YAML.parse(yml)
+
+  const { image } = json.services[name] || {}
+
+  if (image) {
+    consola.success(`Docker compose parse complete. Old image: ${image}`)
+    return image
+  }
+
+  const message = `Can not find the service named: ${name}`
+  consola.error(message)
+  throw new Error(message)
+}
+
+export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
+  if (oldValue === newValue) {
+    consola.success('Provide same image name, skip current step.')
+    return
+  }
+
+  await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
+  consola.success(`Replace image from ${oldValue} to ${newValue}`)
+  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
+  consola.success('Docker compose up complete')
 }

@@ -22,3 +22,15 @@ interface DudeConfig {
   }
   repos?: ImageRepo[]
 }
+
+interface DockerComposeService {
+  image: string
+  volumns: string[]
+  ports: string[]
+  network_mode: string
+}
+
+interface DockerCompose {
+  version: string
+  services: Record<string, DockerComposeService>
+}
