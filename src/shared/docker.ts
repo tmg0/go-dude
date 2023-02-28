@@ -2,7 +2,9 @@ import { join } from 'path'
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
 import consola from 'consola'
+import dayjs from 'dayjs'
 import { execAsync } from './common'
+import { getLatestCommitHash } from './git'
 
 export const dockerBuild = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
@@ -31,4 +33,10 @@ export const dockerRemoveImage = (name: string, tag: string) => {
 
 export const dockerLoadImage = (ssh: NodeSSH, _name: string, tag: string) => {
   return ssh.execCommand(`docker load -i /images/${tag}.tar`)
+}
+
+export const dockerImageTag = () => {
+  const hash = getLatestCommitHash()
+  const date = dayjs().format('YYYYMMDD')
+  return `${date}-${hash}`
 }

@@ -1,8 +1,7 @@
 import { program } from 'commander'
-import { nanoid } from 'nanoid'
 import { version } from '../../package.json'
 import { execBuildScript, readConf, readName, uploadImage } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar } from '../shared/docker'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag } from '../shared/docker'
 import { sshConnect } from '../shared/ssh'
 
 program.command('build')
@@ -15,7 +14,7 @@ program.command('build')
 
     await execBuildScript(config)
 
-    const tag = nanoid()
+    const tag = dockerImageTag()
 
     await dockerBuild(name, tag)
     await dockerSaveImage(name, tag)
