@@ -5,7 +5,8 @@ export const gitCmd = (cmd: string) => `git -C ${process.cwd()} ${cmd}`
 
 export const hasUncommit = async () => {
   const cmd = gitCmd('diff HEAD')
-  return !!(await execAsync(cmd))
+  const res = await execAsync(cmd)
+  return !!res
 }
 
 export const getLatestCommitHash = async () => {
