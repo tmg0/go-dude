@@ -8,7 +8,7 @@ program.command('push')
   .version(version)
   .description('Push image to docker-compose file by ssh.')
   .argument('<string>', 'Image URL')
-  .option('-t --tag <char>', 'Only replace image tag.')
+  .option('-t --tag', 'Only replace image tag.')
   .option('-c --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
     const config = await readConf(option.config)
@@ -17,6 +17,9 @@ program.command('push')
     const ssh = await sshConnect(config)
 
     const image = await dockerComposeServiceImage(ssh, config, name)
+
+    if (option.tag) { str = image.replace(/:.*/, `:${str}`) }
+
     await replaceImage(ssh, config, name, image, str)
     ssh.dispose()
   })
