@@ -20,6 +20,18 @@ export const dockerBuild = async (name: string, tag: string) => {
   consola.success(`Docker build complete. Image: ${img}`)
 }
 
+export const dockerTag = async (config: DudeConfig, name: string, tag: string) => {
+  if (!hasRepos(config)) { return }
+
+  const t = async (repo: ImageRepo) => {
+    const target = `${repo.host}/${repo.project}/${name}:${tag}`
+    await execAsync(`docker tag ${name}:${tag} ${target}`)
+    consola.success(`Docker tag complete. Tag: ${target}`)
+  }
+
+  await Promise.all((config.repos as ImageRepo[]).map(t))
+}
+
 export const dockerSaveImage = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
   const dir = join(process.cwd(), '.images')

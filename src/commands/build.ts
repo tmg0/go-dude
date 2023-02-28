@@ -1,7 +1,7 @@
 import { program } from 'commander'
 import { version } from '../../package.json'
 import { execBuildScript, readConf, readName, uploadImage } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag, dockerLogin, dockerPush } from '../shared/docker'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshConnect } from '../shared/ssh'
 
 program.command('build')
@@ -19,8 +19,10 @@ program.command('build')
     await dockerBuild(name, tag)
 
     if (config.repos && config.repos.length > 0) {
+      await dockerTag(config, name, tag)
       await dockerLogin(config)
       await dockerPush(config, name, tag)
+      await dockerRemoveImage(name, tag)
 
       return
     }
