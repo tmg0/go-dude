@@ -1,9 +1,9 @@
-import { join } from 'path'
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
 import consola from 'consola'
 import dayjs from 'dayjs'
-import { resolve } from 'pathe'
+import { resolvePath } from 'mlly'
+import { join } from 'pathe'
 import { execAsync } from './common'
 import { getLatestCommitHash } from './git'
 
@@ -11,9 +11,12 @@ const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
 export const dockerBuild = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
-  const cwd = process.cwd()
+
   const exist = fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
-  await execAsync(`docker build -f ${exist ? cwd : resolve('.')}/Dockerfile -t ${img} .`)
+
+  const path = await resolvePath('../../Dockerfile', { url: import.meta.url })
+
+  await execAsync(exist ? `docker build -f -t ${img} .` : `docker build -f ${path} -t ${img} .`)
   consola.success(`Docker build complete. Image: ${img}`)
 }
 
