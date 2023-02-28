@@ -1,3 +1,9 @@
+interface ImageRepo {
+  host: string
+  username: string
+  password: string
+}
+
 interface DudeConfig {
   name?: string
   dockerCompose: {
@@ -13,4 +19,5 @@ interface DudeConfig {
     script: string
     output: string
   }
+  repos?: ImageRepo[]
 }

@@ -40,3 +40,8 @@ export const dockerImageTag = async () => {
   const hash = await getLatestCommitHash()
   return `${date}-${hash}`
 }
+
+export const dockerLogin = async (repo: ImageRepo) => {
+  await execAsync(`docker login -u ${repo.username} -p ${repo.password} ${repo.host}`)
+  consola.success(`Docker login complete. Host: ${repo.host}`)
+}
