@@ -2,8 +2,8 @@ import consola from 'consola'
 import { program } from 'commander'
 import YAML from 'yaml'
 import { version } from '../../package.json'
-import { readConf, readName, getDockerComposeFilePath } from '../utils'
-import { sshConnect } from '../ssh'
+import { readConf, readName, getDockerComposeFilePath } from '../shared/common'
+import { sshConnect } from '../shared/ssh'
 
 program.command('push')
   .version(version)

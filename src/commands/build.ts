@@ -1,9 +1,9 @@
 import { program } from 'commander'
 import { nanoid } from 'nanoid'
 import { version } from '../../package.json'
-import { execBuildScript, readConf, readName, uploadImage } from '../utils'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar } from '../docker'
-import { sshConnect } from '../ssh'
+import { execBuildScript, readConf, readName, uploadImage } from '../shared/common'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar } from '../shared/docker'
+import { sshConnect } from '../shared/ssh'
 
 program.command('build')
   .version(version)

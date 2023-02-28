@@ -3,7 +3,7 @@ import { dirname, join } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
 import { Client } from 'node-scp'
-import { CONFIG_FILENAME } from './consts'
+import { CONFIG_FILENAME } from '../consts'
 
 export const readName = async (config: DudeConfig): Promise<string> => {
   if (config.name) { return config.name }

@@ -2,7 +2,7 @@ import { join } from 'path'
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
 import consola from 'consola'
-import { execAsync } from './utils'
+import { execAsync } from './common'
 
 export const dockerBuild = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
