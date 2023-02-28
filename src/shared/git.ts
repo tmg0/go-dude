@@ -10,9 +10,11 @@ export const hasUncommit = async () => {
 }
 
 export const getLatestCommitHash = async () => {
-  if (await hasUncommit()) { consola.error('Has uncommitted change.') }
+  const valid = !(await hasUncommit())
 
-  const cmd = gitCmd('log --pretty=format:"%h" -n 1')
+  if (valid) { return execAsync(gitCmd('log --pretty=format:"%h" -n 1')) }
 
-  return execAsync(cmd)
+  const message = 'Has uncommitted change.'
+  consola.error(message)
+  throw new Error(message)
 }

@@ -35,8 +35,8 @@ export const dockerLoadImage = (ssh: NodeSSH, _name: string, tag: string) => {
   return ssh.execCommand(`docker load -i /images/${tag}.tar`)
 }
 
-export const dockerImageTag = () => {
-  const hash = getLatestCommitHash()
+export const dockerImageTag = async () => {
   const date = dayjs().format('YYYYMMDD')
+  const hash = await getLatestCommitHash()
   return `${date}-${hash}`
 }

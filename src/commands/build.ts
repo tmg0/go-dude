@@ -14,7 +14,7 @@ program.command('build')
 
     await execBuildScript(config)
 
-    const tag = dockerImageTag()
+    const tag = await dockerImageTag()
 
     await dockerBuild(name, tag)
     await dockerSaveImage(name, tag)
