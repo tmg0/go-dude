@@ -6,6 +6,8 @@ import dayjs from 'dayjs'
 import { execAsync } from './common'
 import { getLatestCommitHash } from './git'
 
+const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
+
 export const dockerBuild = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
   const cwd = process.cwd()
@@ -41,7 +43,25 @@ export const dockerImageTag = async () => {
   return `${date}-${hash}`
 }
 
-export const dockerLogin = async (repo: ImageRepo) => {
-  await execAsync(`docker login -u ${repo.username} -p ${repo.password} ${repo.host}`)
-  consola.success(`Docker login complete. Host: ${repo.host}`)
+export const dockerLogin = async (config: DudeConfig) => {
+  if (!hasRepos(config)) { return }
+
+  const login = async (repo: ImageRepo) => {
+    await execAsync(`docker login -u ${repo.username} -p ${repo.password} ${repo.host}`)
+    consola.success(`Docker login complete. Host: ${repo.host}`)
+  }
+
+  await Promise.all((config.repos as ImageRepo[]).map(login))
+}
+
+export const dockerPush = async (config: DudeConfig, name: string, tag: string) => {
+  if (!hasRepos(config)) { return }
+
+  const push = async (repo: ImageRepo) => {
+    const path = join(repo.host, repo.project, `${name}:${tag}`)
+    await execAsync(`docker push ${path}`)
+    consola.success(`Docker push complete. Repo: ${path}`)
+  }
+
+  await Promise.all((config.repos as ImageRepo[]).map(push))
 }

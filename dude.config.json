@@ -8,5 +8,13 @@
   "build": {
     "script": "npm run build",
     "output": "dist"
-  }
+  },
+  "repos": [
+    {
+      "host": "",
+      "username": "",
+      "password": "",
+      "project": ""
+    }
+  ]
 }

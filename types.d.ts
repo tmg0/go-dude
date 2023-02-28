@@ -2,6 +2,7 @@ interface ImageRepo {
   host: string
   username: string
   password: string
+  project: string
 }
 
 interface DudeConfig {
