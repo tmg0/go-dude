@@ -4,5 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "nuxt.isNuxtApp": false
+  "nuxt.isNuxtApp": false,
+  "testing.automaticallyOpenPeekView": "never"
 }
