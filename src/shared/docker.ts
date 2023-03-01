@@ -46,8 +46,9 @@ export const dockerRemoveImageTar = (_name: string, tag: string) => {
   return fse.remove(path)
 }
 
-export const dockerRemoveImage = (name: string, tag: string) => {
-  return execAsync(`docker image rm ${name}:${tag}`)
+export const dockerRemoveImage = async (name: string, tag: string) => {
+  await execAsync(`docker image rm ${name}:${tag}`)
+  consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
 }
 
 export const dockerLoadImage = (ssh: NodeSSH, _name: string, tag: string) => {
