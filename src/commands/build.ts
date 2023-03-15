@@ -22,13 +22,13 @@ program.command('build')
       await dockerTag(config, name, tag)
       await dockerLogin(config)
       await dockerPush(config, name, tag)
-      await dockerRemoveImage(name, tag)
+      await dockerRemoveImage(config, name, tag)
 
       return
     }
 
     await dockerSaveImage(name, tag)
-    await dockerRemoveImage(name, tag)
+    await dockerRemoveImage(config, name, tag)
     await uploadImage(config, name, tag)
     await dockerRemoveImageTar(name, tag)
 

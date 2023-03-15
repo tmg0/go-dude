@@ -10,6 +10,8 @@ import { getLatestCommitHash } from './git'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
+const repoTag = (repo: ImageRepo, name: string, tag: string) => `${repo.host}/${repo.project}/${name}:${tag}`
+
 export const dockerBuild = async (name: string, tag: string) => {
   const img = `${name}:${tag}`
 
@@ -25,7 +27,7 @@ export const dockerTag = async (config: DudeConfig, name: string, tag: string) =
   if (!hasRepos(config)) { return }
 
   const t = async (repo: ImageRepo) => {
-    const target = `${repo.host}/${repo.project}/${name}:${tag}`
+    const target = repoTag(repo, name, tag)
     await execAsync(`docker tag ${name}:${tag} ${target}`)
     consola.success(`Docker tag complete. Tag: ${target}`)
   }
@@ -46,8 +48,16 @@ export const dockerRemoveImageTar = (_name: string, tag: string) => {
   return fse.remove(path)
 }
 
-export const dockerRemoveImage = async (name: string, tag: string) => {
-  await execAsync(`docker image rm ${name}:${tag}`)
+export const dockerRemoveImage = async (config: DudeConfig, name: string, tag: string) => {
+  await Promise.all([
+    execAsync(`docker image rm ${name}:${tag}`),
+    (() => {
+      if (!hasRepos(config)) { return [] }
+      return (config.repos as ImageRepo[]).map((repo) => {
+        return execAsync(`docker image rm ${repoTag(repo, name, tag)}`)
+      })
+    })()
+  ])
   consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
 }
 
