@@ -17,7 +17,7 @@ export const dockerBuild = async (name: string, tag: string) => {
 
   const path = await resolvePath('../../Dockerfile', { url: import.meta.url })
 
-  await execAsync(exist ? `docker build -f -t ${img} .` : `docker build -f ${path} -t ${img} .`)
+  await execAsync(exist ? `docker build -t ${img} .` : `docker build -f ${path} -t ${img} .`)
   consola.success(`Docker build complete. Image: ${img}`)
 }
 
