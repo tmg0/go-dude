@@ -95,6 +95,8 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
 }
 
 export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
+  if (!config?.dockerCompose) { throw config }
+
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
   const json: DockerCompose = YAML.parse(yml)
 
@@ -111,6 +113,8 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
+  if (!config?.dockerCompose) { return }
+
   if (oldValue === newValue) {
     consola.success('Provide same image name, skip current step.')
     return

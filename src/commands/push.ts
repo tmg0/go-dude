@@ -16,10 +16,15 @@ program.command('push')
 
     const ssh = await sshConnect(config)
 
-    const image = await dockerComposeServiceImage(ssh, config, name)
+    if (config.dockerCompose) {
+      const image = await dockerComposeServiceImage(ssh, config, name)
+      if (option.tag) { str = image.replace(/:.*/, `:${str}`) }
+      await replaceImage(ssh, config, name, image, str)
+    }
 
-    if (option.tag) { str = image.replace(/:.*/, `:${str}`) }
+    if (config.k8s) {
+      // todo: push image to k8s container
+    }
 
-    await replaceImage(ssh, config, name, image, str)
     ssh.dispose()
   })

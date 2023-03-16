@@ -7,8 +7,14 @@ interface ImageRepo {
 
 interface DudeConfig {
   name?: string
-  dockerCompose: {
+  dockerCompose?: false | {
     file: string
+  }
+  k8s?: boolean | {
+    deployment?: string
+    pod?: string
+    container?: string
+    namespace?: string
   }
   ssh: {
     host: string
