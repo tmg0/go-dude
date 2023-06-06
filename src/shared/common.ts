@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process'
+import { exec } from 'node:child_process'
 import { dirname, join } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
@@ -41,12 +41,13 @@ export const readConf = (path = '.'): Promise<DudeConfig> => {
 }
 
 export const execAsync = (cmd: string) => {
-  return new Promise((resolve) => {
-    const [command, ...args] = cmd.split(' ')
-    const exec = spawn(command, args)
-
-    exec.on('close', (code) => {
-      resolve(code)
+  return new Promise((resolve, reject) => {
+    exec(cmd, (error, stdout) => {
+      if (error) {
+        reject(error)
+        return
+      }
+      resolve(stdout)
     })
   })
 }
