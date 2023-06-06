@@ -42,13 +42,15 @@ export const readConf = (path = '.'): Promise<DudeConfig> => {
 
 export const execAsync = (cmd: string) => {
   return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout) => {
+    const p = exec(cmd, (error, stdout) => {
       if (error) {
         reject(error)
         return
       }
       resolve(stdout)
     })
+
+    p.stdout?.pipe(process.stdout)
   })
 }
 
