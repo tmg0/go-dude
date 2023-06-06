@@ -6,6 +6,7 @@
     "password": ""
   },
   "build": {
+    "script": "pnpm build",
     "output": "dist"
   },
   "repos": [

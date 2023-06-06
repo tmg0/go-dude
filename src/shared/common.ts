@@ -1,4 +1,4 @@
-import { exec } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { dirname, join } from 'pathe'
 import consola from 'consola'
 import fse from 'fs-extra'
@@ -23,7 +23,7 @@ export const readName = async (config: DudeConfig): Promise<string> => {
 }
 
 export const getDockerComposeFilePath = (config: DudeConfig) => {
-  if (config.dockerCompose.file) { return dirname(config.dockerCompose.file) }
+  if (config.dockerCompose && config.dockerCompose.file) { return dirname(config.dockerCompose.file) }
 
   const message = 'Please declare the docker compose file path.'
   consola.error(message)
@@ -41,13 +41,12 @@ export const readConf = (path = '.'): Promise<DudeConfig> => {
 }
 
 export const execAsync = (cmd: string) => {
-  return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout) => {
-      if (error) {
-        reject(error)
-        return
-      }
-      resolve(stdout)
+  return new Promise((resolve) => {
+    const [command, ...args] = cmd.split(' ')
+    const exec = spawn(command, args)
+
+    exec.on('close', (code) => {
+      resolve(code)
     })
   })
 }
