@@ -1,5 +1,6 @@
 import { exec } from 'node:child_process'
 import { dirname, join } from 'pathe'
+import { filename } from 'pathe/utils'
 import consola from 'consola'
 import fse from 'fs-extra'
 import { Client } from 'node-scp'
@@ -26,6 +27,14 @@ export const getDockerComposeFilePath = (config: DudeConfig) => {
   if (config.dockerCompose && config.dockerCompose.file) { return dirname(config.dockerCompose.file) }
 
   const message = 'Please declare the docker compose file path.'
+  consola.error(message)
+  throw new Error(message)
+}
+
+export const getDockerComposeFileName = (config: DudeConfig) => {
+  if (config.dockerCompose && config.dockerCompose.file) { return filename(config.dockerCompose.file) }
+
+  const message = 'Please declare the docker compose file name.'
   consola.error(message)
   throw new Error(message)
 }

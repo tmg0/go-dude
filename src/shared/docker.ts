@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { resolvePath } from 'mlly'
 import { join } from 'pathe'
 import YAML from 'yaml'
-import { execAsync, getDockerComposeFilePath } from './common'
+import { execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
@@ -120,13 +120,13 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
 
   json.services[name] = { ...json.services[temp], image: '' }
 
-  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && touch docker-compose.dude-${str}.yml`)
+  const dockerComposeFileName = `docker-compose.${str}.yml`
+
+  await ssh.execCommand(`echo "${YAML.stringify(json)}" > ${join(getDockerComposeFilePath(config), dockerComposeFileName)}`)
+
+  config.dockerCompose.file = dockerComposeFileName
 
   return ''
-}
-
-export const dockerComposeCreateService = (name: string) => {
-
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
@@ -139,6 +139,6 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
 
   await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
   consola.success(`Replace image from ${oldValue} to ${newValue}`)
-  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose up -d ${name}`)
+  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose -f ${getDockerComposeFileName(config)} up -d ${name}`)
   consola.success('Docker compose up complete')
 }
