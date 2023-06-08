@@ -94,22 +94,39 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
   await Promise.all((config.repos as ImageRepo[]).map(push))
 }
 
-export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
+export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, str = '') => {
   if (!config?.dockerCompose) { throw config }
 
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
   const json: DockerCompose = YAML.parse(yml)
 
-  const { image } = json.services[name] || {}
+  const { image } = json?.services[name] || {}
 
   if (image) {
     consola.success(`Docker compose parse complete. Old image: ${image}`)
     return image
   }
 
-  const message = `Can not find the service named: ${name}`
-  consola.error(message)
-  throw new Error(message)
+  const confirmed = await consola.prompt(`Create a new docker-compose file and add a service named: ${name}?`, {
+    type: 'confirm'
+  })
+
+  if (!confirmed) { throw consola.error(new Error(`Can not find the service named: ${name}`)) }
+
+  const temp = await consola.prompt('Pick a service template.', {
+    type: 'select',
+    options: Object.keys(json?.services || {})
+  }) as unknown as string
+
+  json.services[name] = { ...json.services[temp], image: '' }
+
+  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && touch docker-compose.dude-${str}.yml`)
+
+  return ''
+}
+
+export const dockerComposeCreateService = (name: string) => {
+
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
