@@ -3,7 +3,7 @@ import { version } from '../../package.json'
 import { readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { dockerComposeServiceImage, replaceImage } from '../shared/docker'
-import { deploymentLabelSelectors, kubeGetContainers, kubeGetPods, kubeSetImage } from '../shared/k8s'
+import { deploymentLabelSelectors, kubeGetContainers, kubeSetImage } from '../shared/k8s'
 
 program.command('push')
   .version(version)
@@ -26,9 +26,9 @@ program.command('push')
     if (config.k8s) {
       // todo: push image to k8s container
       const deploySelectors = await deploymentLabelSelectors(ssh, config)
-      const [pod] = await kubeGetPods(ssh, config, deploySelectors)
+      // const [pod] = await kubeGetPods(ssh, config, deploySelectors)
       const [container] = await kubeGetContainers(ssh, config, deploySelectors)
-      await kubeSetImage(ssh, config, pod, container, str)
+      await kubeSetImage(ssh, config, container, str)
     }
 
     ssh.dispose()

@@ -20,6 +20,6 @@ export const kubeGetContainers = async (ssh: NodeSSH, conf: DudeConfig, selector
   return stdout.split('#')
 }
 
-export const kubeSetImage = (ssh: NodeSSH, conf: DudeConfig, pod: string, container: string, image: string) => {
-  return ssh.execCommand(`kubectl set image pod/${pod} ${container}=${image} -n ${conf.k8s.namespace}`)
+export const kubeSetImage = (ssh: NodeSSH, conf: DudeConfig, container: string, image: string) => {
+  return ssh.execCommand(`kubectl set image deployment/${conf.k8s.deployment} ${container}=${image} -n ${conf.k8s.namespace}`)
 }
