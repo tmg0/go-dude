@@ -10,8 +10,8 @@ interface DudeConfig {
   dockerCompose?: false | {
     file: string
   }
-  k8s?: boolean | {
-    deployment?: string
+  k8s: {
+    deployment: string
     pod?: string
     container?: string
     namespace?: string

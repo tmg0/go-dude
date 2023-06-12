@@ -9,6 +9,12 @@
     "script": "pnpm build",
     "output": "dist"
   },
+  "k8s": {
+    "namespace": "",
+    "deployment": "",
+    "pod": "",
+    "container": ""
+  },
   "repos": [
     {
       "host": "",
