@@ -1,4 +1,5 @@
 import { NodeSSH } from 'node-ssh'
+import consola from 'consola'
 
 export const deploymentLabelSelectors = async (ssh: NodeSSH, conf: DudeConfig) => {
   const { stdout } = await ssh.execCommand(`kubectl get deployment ${conf.k8s.deployment} -n ${conf.k8s.namespace} -o json`)
@@ -20,6 +21,7 @@ export const kubeGetContainers = async (ssh: NodeSSH, conf: DudeConfig, selector
   return stdout.split('#')
 }
 
-export const kubeSetImage = (ssh: NodeSSH, conf: DudeConfig, container: string, image: string) => {
-  return ssh.execCommand(`kubectl set image deployment/${conf.k8s.deployment} ${container}=${image} -n ${conf.k8s.namespace}`)
+export const kubeSetImage = async (ssh: NodeSSH, conf: DudeConfig, container: string, image: string) => {
+  await ssh.execCommand(`kubectl set image deployment/${conf.k8s.deployment} ${container}=${image} -n ${conf.k8s.namespace}`)
+  consola.success('Kubectl deployment container image edit complete.')
 }
