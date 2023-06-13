@@ -4,7 +4,7 @@ specifiers:
   '@nuxtjs/eslint-config-typescript': ^12.0.0
   '@types/fs-extra': ^11.0.1
   commander: ^9.4.1
-  consola: ^3.0.0
+  consola: ^3.1.0
   dayjs: ^1.11.7
   eslint: ^8.28.0
   fs-extra: ^11.1.0
@@ -19,7 +19,7 @@ specifiers:
 
 dependencies:
   commander: 9.4.1
-  consola: 3.0.0
+  consola: 3.1.0
   dayjs: 1.11.7
   fs-extra: 11.1.0
   mlly: 1.1.1
@@ -1073,8 +1073,8 @@ packages:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
 
-  /consola/3.0.0:
-    resolution: {integrity: sha512-ed10+SGP/dL3u7fEDxDPb+68vS4JckVjivIMq2wg5to8od2Rki5AyetFivjuC3cE49+azquEVDSgHZ8qYrUxdQ==}
+  /consola/3.1.0:
+    resolution: {integrity: sha512-rrrJE6rP0qzl/Srg+C9x/AE5Kxfux7reVm1Wh0wCjuXvih6DqZgqDZe8auTD28fzJ9TF0mHlSDrPpWlujQRo1Q==}
     dev: false
 
   /cpu-features/0.0.4:
