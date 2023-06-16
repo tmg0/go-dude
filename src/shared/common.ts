@@ -2,6 +2,7 @@ import { exec } from 'node:child_process'
 import { dirname, join } from 'pathe'
 import { filename } from 'pathe/utils'
 import consola from 'consola'
+import { loadConfig } from 'c12'
 import fse from 'fs-extra'
 import { Client } from 'node-scp'
 import { CONFIG_FILENAME } from '../consts'
@@ -39,14 +40,14 @@ export const getDockerComposeFileName = (config: DudeConfig) => {
   throw new Error(message)
 }
 
-export const readConf = (path = '.'): Promise<DudeConfig> => {
-  try {
-    path = join(process.cwd(), path, CONFIG_FILENAME)
-    return fse.readJson(path)
-  } catch (error) {
+export const readConf = async (path = process.cwd()) => {
+  const { config } = await loadConfig<DudeConfig>({ name: CONFIG_FILENAME, cwd: path })
+  if (!config) {
+    const error = new Error('Can not find dude config file.')
     consola.error(error)
     throw error
   }
+  return config
 }
 
 export const execAsync = (cmd: string) => {

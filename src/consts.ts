@@ -1,1 +1,1 @@
-export const CONFIG_FILENAME = 'dude.config.json'
+export const CONFIG_FILENAME = 'dude'
