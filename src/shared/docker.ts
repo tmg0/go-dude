@@ -139,6 +139,8 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
 
   await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
   consola.success(`Replace image from ${oldValue} to ${newValue}`)
-  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && docker-compose -f ${getDockerComposeFileName(config)} up -d ${name}`)
+
+  const cmd = config.dockerCompose.command || 'docker-compose'
+  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && ${cmd} -f ${getDockerComposeFileName(config)} up -d ${name}`)
   consola.success('Docker compose up complete')
 }

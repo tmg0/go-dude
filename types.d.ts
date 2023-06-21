@@ -9,6 +9,7 @@ interface DudeConfig {
   name?: string
   dockerCompose?: false | {
     file: string
+    command?: string
   }
   k8s: {
     deployment: string
