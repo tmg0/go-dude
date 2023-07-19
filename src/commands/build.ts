@@ -9,13 +9,17 @@ program.command('build')
   .description('build project')
   .option('-c --config <char>', 'Declare dude config file.')
   .option('-t --tag <char>', 'Named image tag without git hash.')
-  .action(async (_, option) => {
+  .action(async (option) => {
     const config = await readConf(option.config)
     const name = await readName(config)
 
     if (config.build.script) { await execBuildScript(config) }
 
-    const tag = option?.tag || await dockerImageTag()
+    let tag = option?.tag
+
+    if (!tag) {
+      tag = await dockerImageTag()
+    }
 
     await dockerBuild(name, tag)
 
