@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { resolvePath } from 'mlly'
 import { join } from 'pathe'
 import YAML from 'yaml'
-import { execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
+import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
@@ -94,11 +94,13 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
   await Promise.all((config.repos as ImageRepo[]).map(push))
 }
 
-export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, str = '') => {
+export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
   if (!config?.dockerCompose) { throw config }
 
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
   const json: DockerCompose = YAML.parse(yml)
+
+  json.version = '\\"2.2\\"'
 
   const { image } = json?.services[name] || {}
 
@@ -118,15 +120,15 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
     options: Object.keys(json?.services || {})
   }) as unknown as string
 
-  json.services[name] = { ...json.services[temp], image: '' }
+  const PLACEHOLDER = 'PLACEHOLDER'
 
-  const dockerComposeFileName = `docker-compose.${str}.yml`
+  json.services[name] = { ...json.services[temp], image: PLACEHOLDER }
 
-  await ssh.execCommand(`echo "${YAML.stringify(json)}" > ${join(getDockerComposeFilePath(config), dockerComposeFileName)}`)
+  await backupDockerComposeFile(ssh, config)
 
-  config.dockerCompose.file = dockerComposeFileName
+  await ssh.execCommand(`echo "${YAML.stringify(json)}" > ${config.dockerCompose.file}`)
 
-  return ''
+  return PLACEHOLDER
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
@@ -140,8 +142,11 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
   await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
   consola.success(`Replace image from ${oldValue} to ${newValue}`)
 
-  const cmd = config.dockerCompose.command || `docker-compose -f ${getDockerComposeFileName(config)} up -d ${name}`
+  const filename = getDockerComposeFileName(config)
+  const filepath = getDockerComposeFilePath(config)
 
-  await ssh.execCommand(`cd ${getDockerComposeFilePath(config)} && ${cmd}`)
-  consola.success('Docker compose up complete')
+  const cmd = config.dockerCompose.command || `docker-compose -f ${filename} up -d ${name}`
+
+  await ssh.execCommand(`cd ${filepath} && ${cmd}`)
+  consola.success(`From ${filepath} docker compose up: ${filename}`)
 }

@@ -5,7 +5,11 @@ import consola from 'consola'
 import { loadConfig } from 'c12'
 import fse from 'fs-extra'
 import { Client } from 'node-scp'
+import { NodeSSH } from 'node-ssh'
+import dayjs from 'dayjs'
 import { CONFIG_FILENAME } from '../consts'
+
+export const isString = (value: any): value is string => typeof value === 'string'
 
 export const readName = async (config: DudeConfig): Promise<string> => {
   if (config.name) { return config.name }
@@ -85,4 +89,18 @@ export const execBuildScript = async (config: DudeConfig) => {
   if (!config.build.script) { return }
   await execAsync(config.build.script)
   consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
+}
+
+export const renameSshFile = async (ssh: NodeSSH, from: string, to: string) => {
+  await ssh.execCommand(`mv ${from} ${to}`)
+}
+
+export const backupDockerComposeFile = async (ssh: NodeSSH, config: DudeConfig) => {
+  const { dockerCompose } = config
+  if (!dockerCompose || !dockerCompose.file) { return }
+  const filepath = getDockerComposeFilePath(config)
+  const filename = getDockerComposeFileName(config)
+  const target = `docker-compose.${dayjs().format('YYYYMMDD_HHMM')}.yml`
+  await renameSshFile(ssh, dockerCompose.file, join(filepath, target))
+  consola.success(`Rename old docker compose file from ${filename} to ${target}`)
 }
