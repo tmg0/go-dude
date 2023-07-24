@@ -1,8 +1,10 @@
 import { program } from 'commander'
+import consola from 'consola'
 import { version } from '../../package.json'
 import { execBuildScript, readConf, readName, uploadImage } from '../shared/common'
 import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshConnect } from '../shared/ssh'
+import push from './push'
 
 program.command('build')
   .version(version)
@@ -26,8 +28,19 @@ program.command('build')
     if (config.repos && config.repos.length > 0) {
       await dockerTag(config, name, tag)
       await dockerLogin(config)
-      await dockerPush(config, name, tag)
+      const images = await dockerPush(config, name, tag)
       await dockerRemoveImage(config, name, tag)
+
+      if (images && images.length) {
+        if (images.length > 1) { return }
+
+        const [image] = images
+        const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
+          type: 'confirm'
+        })
+        if (!confirmed) { return }
+        push(image, option)
+      }
 
       return
     }

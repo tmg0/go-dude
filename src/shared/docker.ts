@@ -85,13 +85,17 @@ export const dockerLogin = async (config: DudeConfig) => {
 export const dockerPush = async (config: DudeConfig, name: string, tag: string) => {
   if (!hasRepos(config)) { return }
 
+  const images: string[] = []
+
   const push = async (repo: ImageRepo) => {
     const path = join(repo.host, repo.project, `${name}:${tag}`)
     await execAsync(`docker push ${path}`)
+    images.push(path)
     consola.success(`Docker push complete. Repo: ${path}`)
   }
 
   await Promise.all((config.repos as ImageRepo[]).map(push))
+  return images
 }
 
 export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
