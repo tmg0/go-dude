@@ -39,7 +39,7 @@ program.command('build')
           type: 'confirm'
         })
         if (!confirmed) { return }
-        push(image, option)
+        push(image, { ...option, tag: undefined })
       }
 
       return
