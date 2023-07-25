@@ -31,7 +31,7 @@ program.command('build')
       const images = await dockerPush(config, name, tag)
       await dockerRemoveImage(config, name, tag)
 
-      if (images && images.length) {
+      if (config?.ssh?.host && images && images.length) {
         if (images.length > 1) { return }
 
         const [image] = images
