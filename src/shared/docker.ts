@@ -7,6 +7,7 @@ import { join } from 'pathe'
 import YAML from 'yaml'
 import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
+import { sshExecAsync } from './ssh'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
@@ -151,6 +152,6 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
 
   const cmd = config.dockerCompose.command || `docker-compose -f ${filename} up -d ${name}`
 
-  await ssh.execCommand(`cd ${filepath} && ${cmd}`)
+  await sshExecAsync(ssh, `cd ${filepath} && ${cmd}`)
   consola.success(`From ${filepath} docker compose up: ${filename}`)
 }
