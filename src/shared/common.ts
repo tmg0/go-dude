@@ -56,7 +56,7 @@ export const readConf = async (path = process.cwd()) => {
   return config
 }
 
-export const execAsync = (cmd: string) => {
+export const execAsync = (cmd: string, options: { console?: boolean } = { console: true }) => {
   return new Promise((resolve, reject) => {
     const p = exec(cmd, (error, stdout) => {
       if (error) {
@@ -66,7 +66,9 @@ export const execAsync = (cmd: string) => {
       resolve(stdout)
     })
 
-    p.stdout?.pipe(process.stdout)
+    if (options.console) {
+      p.stdout?.pipe(process.stdout)
+    }
   })
 }
 
@@ -113,7 +115,7 @@ export const checkVersion = async () => {
     const json = destr<NpmView>(stdout)
 
     if (version !== json.version) {
-      consola.box(`Update available: ${version} => ${json.version}`, `Run "npm install -g ${json._id}" to update`)
+      consola.box(`Update available: ${version} => ${json.version}\n`, `Run "npm install -g ${json._id}" to update`)
     }
   } catch {
     consola.warn('Npm connect error.')
