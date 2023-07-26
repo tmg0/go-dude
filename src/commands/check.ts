@@ -1,6 +1,6 @@
 import { program } from 'commander'
 import { version } from '../../package.json'
-import { readConf, readName } from '../shared/common'
+import { checkVersion, readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { deploymentLabelSelectors, kubeGetPo } from '../shared/k8s'
 import { dockerPs } from '../shared/docker'
@@ -10,6 +10,7 @@ program.command('check')
   .description('build project')
   .option('-c --config <char>', 'Declare dude config file.')
   .action(async (option) => {
+    await checkVersion()
     const config = await readConf(option.config)
     const name = await readName(config)
     const ssh = await sshConnect(config)

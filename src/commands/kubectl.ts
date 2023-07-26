@@ -1,7 +1,7 @@
 import { program } from 'commander'
 import consola from 'consola'
 import { version } from '../../package.json'
-import { readConf } from '../shared/common'
+import { checkVersion, readConf } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { kubeExecAsync } from 'src/shared/k8s'
 
@@ -11,6 +11,7 @@ program.command('kubectl')
   .argument('<string...>', 'k8s cmd')
   .option('-c --config <char>', 'Declare dude config file.')
   .action(async (str, option) => {
+    await checkVersion()
     const config = await readConf(option.config)
 
     const ssh = await sshConnect(config)

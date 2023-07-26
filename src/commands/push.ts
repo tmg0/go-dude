@@ -1,6 +1,6 @@
 import { program } from 'commander'
 import { version } from '../../package.json'
-import { readConf, readName } from '../shared/common'
+import { checkVersion, readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { dockerComposeServiceImage, replaceImage } from '../shared/docker'
 import { deploymentLabelSelectors, kubeGetContainers, kubeSetImage } from '../shared/k8s'
@@ -34,7 +34,8 @@ program.command('push')
   .argument('<string>', 'Image URL / Image tag')
   .option('-t --tag', 'Only replace image tag.')
   .option('-c --config <char>', 'Declare dude config file.')
-  .action((str, option) => {
+  .action(async (str, option) => {
+    await checkVersion()
     run(str, option)
   })
 
