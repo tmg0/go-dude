@@ -172,3 +172,8 @@ export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: s
   await sshExecAsync(ssh, `cd ${filepath} && ${cmd}`)
   consola.success(`From ${filepath} docker compose up: ${filename}`)
 }
+
+export const dockerPs = async (ssh: NodeSSH, name: string) => {
+  const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'')
+  return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(({ Names }) => Names.includes(name))
+}
