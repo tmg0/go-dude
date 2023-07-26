@@ -109,15 +109,18 @@ export const backupDockerComposeFile = async (ssh: NodeSSH, config: DudeConfig) 
   consola.success(`Rename old docker compose file from ${filename} to ${target}`)
 }
 
-export const checkVersion = async () => {
-  try {
-    const stdout = await execAsync(`npm view ${name} --json`)
-    const json = destr<NpmView>(stdout)
+export const checkVersion = (): Promise<void> => {
+  return new Promise((resolve) => {
+    execAsync(`npm view ${name} --json`).then((stdout) => {
+      const json = destr<NpmView>(stdout)
 
-    if (version !== json.version) {
-      consola.box(`Update available: ${version} => ${json.version}\n`, `Run "npm install -g ${json._id}" to update`)
-    }
-  } catch {
-    consola.warn('Npm connect error.')
-  }
+      if (version !== json.version) {
+        consola.box(`Update available: ${version} => ${json.version}\n`, `Run "npm install -g ${json._id}" to update`)
+      }
+    }).catch(() => {
+      consola.warn('Npm connect error.')
+    }).finally(() => {
+      resolve()
+    })
+  })
 }
