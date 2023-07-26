@@ -9,8 +9,8 @@ export const sshConnect = async (config: DudeConfig) => {
   return ssh
 }
 
-export const sshExecAsync = async (ssh: NodeSSH, cmd: string) => {
+export const sshExecAsync = async (ssh: NodeSSH, cmd: string, options: { console?: boolean } = { console: true }) => {
   const { stdout } = await ssh.execCommand(cmd)
-  console.log(stdout)
+  if (options.console) { console.log(stdout) }
   return stdout
 }

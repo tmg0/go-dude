@@ -174,6 +174,6 @@ export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: s
 }
 
 export const dockerPs = async (ssh: NodeSSH, name: string) => {
-  const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'')
+  const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'', { console: false })
   return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(({ Names }) => Names.includes(name))
 }

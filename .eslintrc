@@ -1,6 +1,7 @@
 {
   "extends": "@nuxtjs/eslint-config-typescript",
   "rules": {
+    "no-console": "off",
     "no-use-before-define": "off",
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",

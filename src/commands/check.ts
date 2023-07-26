@@ -1,5 +1,4 @@
 import { program } from 'commander'
-import consola from 'consola'
 import { version } from '../../package.json'
 import { readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
