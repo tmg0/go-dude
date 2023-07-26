@@ -7,7 +7,9 @@ import fse from 'fs-extra'
 import { Client } from 'node-scp'
 import { NodeSSH } from 'node-ssh'
 import dayjs from 'dayjs'
+import destr from 'destr'
 import { CONFIG_FILENAME } from '../consts'
+import { name, version } from '../../package.json'
 
 export const isString = (value: any): value is string => typeof value === 'string'
 
@@ -103,4 +105,17 @@ export const backupDockerComposeFile = async (ssh: NodeSSH, config: DudeConfig) 
   const target = `docker-compose.${dayjs().format('YYYYMMDD_HHMM')}.yml`
   await renameSshFile(ssh, dockerCompose.file, join(filepath, target))
   consola.success(`Rename old docker compose file from ${filename} to ${target}`)
+}
+
+export const checkVersion = async () => {
+  try {
+    const stdout = await execAsync(`npm view ${name} --json`)
+    const json = destr<NpmView>(stdout)
+
+    if (version !== json.version) {
+      consola.box(`Update available: ${version} => ${json.version}`, `Run "npm install -g ${json._id}" to update`)
+    }
+  } catch {
+    consola.warn('Npm connect error.')
+  }
 }

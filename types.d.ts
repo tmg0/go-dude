@@ -96,3 +96,9 @@ interface K8sContainerStatus {
   started: boolean
   state: Record<string, { startedAt: string }>
 }
+
+interface NpmView {
+  _id: string
+  name: string
+  version: string
+}
