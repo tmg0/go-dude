@@ -111,7 +111,7 @@ export const backupDockerComposeFile = async (ssh: NodeSSH, config: DudeConfig) 
 
 export const checkVersion = (): Promise<void> => {
   return new Promise((resolve) => {
-    execAsync(`npm view ${name} --json`).then((stdout) => {
+    execAsync(`npm view ${name} --json`, { console: false }).then((stdout) => {
       const json = destr<NpmView>(stdout)
 
       if (version !== json.version) {
