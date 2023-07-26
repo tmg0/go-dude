@@ -41,3 +41,14 @@ interface DockerCompose {
   version: string
   services: Record<string, DockerComposeService>
 }
+
+interface DockerVersion {
+  Client: {
+    Platform: { Name: string }
+    Version: string
+  },
+  Server: {
+    Platform: { Name: string }
+    Version: string
+  }
+}

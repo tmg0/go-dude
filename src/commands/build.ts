@@ -6,6 +6,30 @@ import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, docke
 import { sshConnect } from '../shared/ssh'
 import push from './push'
 
+const selectImage = async (config: DudeConfig, images?: string[]) => {
+  if (!config?.ssh?.host) { return }
+  if (!images?.length) { return }
+
+  let [image] = images
+
+  if (images.length > 1) {
+    image = await consola.prompt('Pick a service template.', {
+      type: 'select',
+      options: images
+    }) as unknown as string
+  }
+
+  return image
+}
+
+const pushImage = async (config: DudeConfig, image: string | undefined, option: any) => {
+  if (!image) { return }
+  const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
+    type: 'confirm'
+  })
+  if (confirmed) { push(image, { ...option, tag: undefined }) }
+}
+
 program.command('build')
   .version(version)
   .description('build project')
@@ -31,16 +55,8 @@ program.command('build')
       const images = await dockerPush(config, name, tag)
       await dockerRemoveImage(config, name, tag)
 
-      if (config?.ssh?.host && images && images.length) {
-        if (images.length > 1) { return }
-
-        const [image] = images
-        const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
-          type: 'confirm'
-        })
-        if (!confirmed) { return }
-        push(image, { ...option, tag: undefined })
-      }
+      const image = await selectImage(config, images)
+      await pushImage(config, image, option)
 
       return
     }

@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { resolvePath } from 'mlly'
 import { join } from 'pathe'
 import YAML from 'yaml'
+import destr from 'destr'
 import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
 import { sshExecAsync } from './ssh'
@@ -147,10 +148,26 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
   await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
   consola.success(`Replace image from ${oldValue} to ${newValue}`)
 
+  await serviceDockerRun(ssh, config, name)
+}
+
+export const serviceDockerVersion = async (ssh: NodeSSH) => {
+  const stdout = await sshExecAsync(ssh, 'docker version --format \'{{json .}}\'')
+  const { Server: { Version } } = destr<DockerVersion>(stdout)
+  return Version
+}
+
+export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
+  if (!config?.dockerCompose) { return }
+
   const filename = getDockerComposeFileName(config)
   const filepath = getDockerComposeFilePath(config)
 
-  const cmd = config.dockerCompose.command || `docker-compose -f ${filename} up -d ${name}`
+  const version = await serviceDockerVersion(ssh)
+
+  const dockerComposeCommand = Number(version.split('.')[0]) > 23 ? 'docker compose' : 'docker-compose'
+
+  const cmd = config?.dockerCompose?.command || `${dockerComposeCommand} -f ${filename} up -d ${name}`
 
   await sshExecAsync(ssh, `cd ${filepath} && ${cmd}`)
   consola.success(`From ${filepath} docker compose up: ${filename}`)
