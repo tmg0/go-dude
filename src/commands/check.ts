@@ -2,7 +2,8 @@ import { program } from 'commander'
 import { version } from '../../package.json'
 import { readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
-import { dockerPs } from 'src/shared/docker'
+import { deploymentLabelSelectors, kubeGetPo } from '../shared/k8s'
+import { dockerPs } from '../shared/docker'
 
 program.command('check')
   .version(version)
@@ -20,6 +21,19 @@ program.command('check')
 
     if (config.k8s) {
       // TODO: Check k8s pod status
+      const deploySelectors = await deploymentLabelSelectors(ssh, config)
+      const stdout = await kubeGetPo(ssh, config, deploySelectors)
+      console.table(stdout.map(({ name: Names, image: Image, state }) => {
+        const [State] = Object.keys(state)
+        const Status = JSON.stringify(state[State])
+
+        return {
+          Names,
+          Image,
+          State,
+          Status
+        }
+      }))
     }
 
     ssh.dispose()

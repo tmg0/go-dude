@@ -69,3 +69,30 @@ interface DockerPs {
   State: string
   Status: string
 }
+
+interface KubectlGetPo {
+  apiVersion: string
+  items: {
+    apiVersion: string
+    kind: string
+    metadata: {}
+    spec: {
+      containers: {}[]
+    }
+    status: {
+      containerStatuses: K8sContainerStatus[]
+    }
+  }[]
+}
+
+interface K8sContainerStatus {
+  containerID: string
+  image: string
+  imageID: string
+  lastState: string
+  name: string
+  ready: string
+  restartCount: number
+  started: boolean
+  state: Record<string, { startedAt: string }>
+}
