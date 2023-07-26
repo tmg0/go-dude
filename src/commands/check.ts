@@ -25,7 +25,7 @@ program.command('check')
       const stdout = await kubeGetPo(ssh, config, deploySelectors)
       console.table(stdout.map(({ name: Names, image: Image, state }) => {
         const [State] = Object.keys(state)
-        const Status = JSON.stringify(state[State])
+        const Status = Object.entries(state[State]).map(([key, value]) => `${key}: ${value}`).join(',')
 
         return {
           Names,
