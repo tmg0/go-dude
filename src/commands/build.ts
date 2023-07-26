@@ -1,7 +1,7 @@
 import { program } from 'commander'
 import consola from 'consola'
 import { version } from '../../package.json'
-import { execBuildScript, readConf, readName, uploadImage } from '../shared/common'
+import { checkVersion, execBuildScript, readConf, readName, uploadImage } from '../shared/common'
 import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshConnect } from '../shared/ssh'
 import push from './push'
@@ -36,6 +36,7 @@ program.command('build')
   .option('-c --config <char>', 'Declare dude config file.')
   .option('-t --tag <char>', 'Named image tag without git hash.')
   .action(async (option) => {
+    await checkVersion()
     const config = await readConf(option.config)
     const name = await readName(config)
 
