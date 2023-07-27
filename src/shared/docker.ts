@@ -6,6 +6,7 @@ import { resolvePath } from 'mlly'
 import { join } from 'pathe'
 import YAML from 'yaml'
 import destr from 'destr'
+import semver from 'semver'
 import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
 import { getLatestCommitHash } from './git'
 import { sshExecAsync } from './ssh'
@@ -25,6 +26,15 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
   let platformOption = ''
 
   if (platform) {
+    const version = await dockerVersion()
+    const isSupportBuildx = semver.gt(version, '19.3.0')
+
+    if (!isSupportBuildx) {
+      const message = 'Local docker version do not support buildx.'
+      consola.error(message)
+      throw new Error(message)
+    }
+
     cmd = 'docker buildx'
     platformOption = `--platform ${platform}`
   }
@@ -159,8 +169,14 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
   await serviceDockerRun(ssh, config, name)
 }
 
+export const dockerVersion = async () => {
+  const stdout = await execAsync('docker version --format \'{{json .}}\'', { console: false })
+  const { Server: { Version } } = destr<DockerVersion>(stdout)
+  return Version
+}
+
 export const serviceDockerVersion = async (ssh: NodeSSH) => {
-  const stdout = await sshExecAsync(ssh, 'docker version --format \'{{json .}}\'')
+  const stdout = await sshExecAsync(ssh, 'docker version --format \'{{json .}}\'', { console: false })
   const { Server: { Version } } = destr<DockerVersion>(stdout)
   return Version
 }
@@ -175,7 +191,7 @@ export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: s
 
   if (!cmd) {
     const version = await serviceDockerVersion(ssh)
-    const dockerComposeCommand = Number(version.split('.')[0]) > 23 ? 'docker compose' : 'docker-compose'
+    const dockerComposeCommand = semver.gt(version, '24.0.0') ? 'docker compose' : 'docker-compose'
     cmd = `${dockerComposeCommand} -f ${filename} up -d ${name}`
   }
 
