@@ -14,14 +14,22 @@ const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
 const repoTag = (repo: ImageRepo, name: string, tag: string) => `${repo.host}/${repo.project}/${name}:${tag}`
 
-export const dockerBuild = async (name: string, tag: string) => {
+export const dockerBuild = async (name: string, tag: string, platform?: string) => {
   const img = `${name}:${tag}`
 
   const exist = fse.pathExistsSync(join(process.cwd(), 'Dockerfile'))
 
   const path = await resolvePath('../../Dockerfile', { url: import.meta.url })
 
-  await execAsync(exist ? `docker build -t ${img} .` : `docker build -f ${path} -t ${img} .`)
+  let cmd = 'docker'
+  let platformOption = ''
+
+  if (platform) {
+    cmd = 'docker buildx'
+    platformOption = `--platform=${platform}`
+  }
+
+  await execAsync(exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`)
   consola.success(`Docker build complete. Image: ${img}`)
 }
 

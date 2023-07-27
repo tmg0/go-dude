@@ -34,6 +34,7 @@ program.command('build')
   .version(version)
   .description('build project')
   .option('-c --config <char>', 'Declare dude config file.')
+  .option('-p --platform <char>', 'Declare target image build platform.')
   .option('-t --tag <char>', 'Named image tag without git hash.')
   .action(async (option) => {
     await checkVersion()
@@ -48,7 +49,7 @@ program.command('build')
       tag = await dockerImageTag()
     }
 
-    await dockerBuild(name, tag)
+    await dockerBuild(name, tag, option?.platform)
 
     if (config.repos && config.repos.length > 0) {
       await dockerTag(config, name, tag)
