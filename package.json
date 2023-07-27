@@ -1,6 +1,6 @@
 {
   "name": "go-dude",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "",
   "bin": {
     "dude": "./dist/index.mjs"
