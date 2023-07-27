@@ -137,22 +137,24 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
     type: 'confirm'
   })
 
-  if (!confirmed) { throw consola.error(new Error(`Can not find the service named: ${name}`)) }
+  if (confirmed) {
+    const temp = await consola.prompt('Pick a service template.', {
+      type: 'select',
+      options: Object.keys(json?.services || {})
+    }) as unknown as string
 
-  const temp = await consola.prompt('Pick a service template.', {
-    type: 'select',
-    options: Object.keys(json?.services || {})
-  }) as unknown as string
+    const PLACEHOLDER = 'PLACEHOLDER'
 
-  const PLACEHOLDER = 'PLACEHOLDER'
+    json.services[name] = { ...json.services[temp], image: PLACEHOLDER }
 
-  json.services[name] = { ...json.services[temp], image: PLACEHOLDER }
+    await backupDockerComposeFile(ssh, config)
 
-  await backupDockerComposeFile(ssh, config)
+    await ssh.execCommand(`echo "${YAML.stringify(json)}" > ${config.dockerCompose.file}`)
 
-  await ssh.execCommand(`echo "${YAML.stringify(json)}" > ${config.dockerCompose.file}`)
+    return PLACEHOLDER
+  }
 
-  return PLACEHOLDER
+  throw consola.error(new Error(`Can not find the service named: ${name}`))
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
