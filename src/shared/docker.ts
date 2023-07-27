@@ -160,14 +160,16 @@ export const serviceDockerVersion = async (ssh: NodeSSH) => {
 export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
   if (!config?.dockerCompose) { return }
 
+  let cmd = config?.dockerCompose?.command
+
   const filename = getDockerComposeFileName(config)
   const filepath = getDockerComposeFilePath(config)
 
-  const version = await serviceDockerVersion(ssh)
-
-  const dockerComposeCommand = Number(version.split('.')[0]) > 23 ? 'docker compose' : 'docker-compose'
-
-  const cmd = config?.dockerCompose?.command || `${dockerComposeCommand} -f ${filename} up -d ${name}`
+  if (!cmd) {
+    const version = await serviceDockerVersion(ssh)
+    const dockerComposeCommand = Number(version.split('.')[0]) > 23 ? 'docker compose' : 'docker-compose'
+    cmd = `${dockerComposeCommand} -f ${filename} up -d ${name}`
+  }
 
   await sshExecAsync(ssh, `cd ${filepath} && ${cmd}`)
   consola.success(`From ${filepath} docker compose up: ${filename}`)
