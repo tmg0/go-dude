@@ -2,6 +2,7 @@ import { exec } from 'node:child_process'
 import { dirname, join } from 'pathe'
 import { filename } from 'pathe/utils'
 import consola from 'consola'
+import { colors } from 'consola/utils'
 import { loadConfig } from 'c12'
 import fse from 'fs-extra'
 import { Client } from 'node-scp'
@@ -115,15 +116,11 @@ export const checkVersion = (): Promise<void> => {
       const json = destr<NpmView>(stdout)
 
       if (version !== json.version) {
-        consola.box(
-          `Update available! %c${version} %c-> %c${json.version}%c\nRun "%cnpm install -g ${json._id}%c" to update.`,
-          'color: red',
-          '',
-          'color: green',
-          '',
-          'color: purple',
-          ''
-        )
+        const oldVersion = colors.red(version)
+        const newVersion = colors.green(json.version)
+        const upgradeCommand = colors.magenta(`npm install -g ${json._id}`)
+
+        consola.box(`Update available! ${oldVersion} → ${newVersion}.\nRun "${upgradeCommand}" to update.`)
       }
     }).catch(() => {
       consola.warn('Npm connect error.')
