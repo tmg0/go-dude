@@ -115,7 +115,15 @@ export const checkVersion = (): Promise<void> => {
       const json = destr<NpmView>(stdout)
 
       if (version !== json.version) {
-        consola.box(`Update available! ${version} => ${json.version}.`, `\nRun "npm install -g ${json._id}" to update.`)
+        consola.box(
+          `Update available! %c${version} %c-> %c${json.version}%c\nRun "%cnpm install -g ${json._id}%c" to update.`,
+          'color: red',
+          '',
+          'color: green',
+          '',
+          'color: purple',
+          ''
+        )
       }
     }).catch(() => {
       consola.warn('Npm connect error.')
