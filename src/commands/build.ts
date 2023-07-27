@@ -27,7 +27,7 @@ const pushImage = async (config: DudeConfig, image: string | undefined, option: 
   const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
     type: 'confirm'
   })
-  if (confirmed) { push(image, { ...option, tag: undefined }) }
+  if (confirmed) { await push(image, { ...option, tag: undefined }) }
 }
 
 program.command('build')
