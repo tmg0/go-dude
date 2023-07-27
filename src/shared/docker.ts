@@ -26,7 +26,7 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
 
   if (platform) {
     cmd = 'docker buildx'
-    platformOption = `--platform=${platform}`
+    platformOption = `--platform ${platform}`
   }
 
   await execAsync(exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`)
