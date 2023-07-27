@@ -54,10 +54,10 @@ program.command('build')
       await dockerTag(config, name, tag)
       await dockerLogin(config)
       const images = await dockerPush(config, name, tag)
-      await dockerRemoveImage(config, name, tag)
-
       const image = await selectImage(config, images)
       await pushImage(config, image, option)
+
+      await dockerRemoveImage(config, name, tag)
 
       return
     }
