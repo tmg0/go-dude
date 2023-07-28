@@ -41,6 +41,7 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
 
   await execAsync(exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`)
   consola.success(`Docker build complete. Image: ${img}`)
+  return img
 }
 
 export const dockerTag = async (config: DudeConfig, name: string, tag: string) => {

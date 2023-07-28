@@ -49,7 +49,7 @@ program.command('build')
       tag = await dockerImageTag()
     }
 
-    await dockerBuild(name, tag, option?.platform)
+    let image: string | undefined = await dockerBuild(name, tag, option?.platform)
 
     if (config.repos && config.repos.length > 0) {
       await dockerTag(config, name, tag)
@@ -57,7 +57,7 @@ program.command('build')
       const images = await dockerPush(config, name, tag)
       await dockerRemoveImage(config, name, tag)
 
-      const image = await selectImage(config, images)
+      image = await selectImage(config, images)
       await pushImage(config, image, option)
 
       return
@@ -71,5 +71,6 @@ program.command('build')
     const ssh = await sshConnect(config)
 
     await dockerLoadImage(ssh, name, tag)
+    await pushImage(config, image, option)
     ssh.dispose()
   })
