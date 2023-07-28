@@ -20,8 +20,8 @@ const run = async (str: any, option: any) => {
   if (config.k8s) {
     // todo: push image to k8s container
     const deploySelectors = await deploymentLabelSelectors(ssh, config)
-    // const [pod] = await kubeGetPodNames(ssh, config, deploySelectors)
-    const [container] = await kubeGetContainers(ssh, config, deploySelectors)
+    // const [pod] = await kubeGetPo(config, deploySelectors)(ssh)
+    const [container] = await kubeGetContainers(config, deploySelectors)(ssh)
     await kubeSetImage(ssh, config, container, str)
   }
 

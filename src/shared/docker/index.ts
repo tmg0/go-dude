@@ -1,15 +1,13 @@
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
 import consola from 'consola'
-import dayjs from 'dayjs'
 import { resolvePath } from 'mlly'
 import { join } from 'pathe'
 import YAML from 'yaml'
 import destr from 'destr'
 import semver from 'semver'
-import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from './common'
-import { getLatestCommitHash } from './git'
-import { sshExecAsync } from './ssh'
+import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from '../common'
+import { sshExecAsync } from '../ssh'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
@@ -75,27 +73,24 @@ export const dockerRemoveImageTar = (_name: string, tag: string) => {
   return fse.remove(path)
 }
 
-export const dockerRemoveImage = async (config: DudeConfig, name: string, tag: string) => {
-  await Promise.all([
-    execAsync(`docker image rm ${name}:${tag}`),
-    (() => {
-      if (!hasRepos(config)) { return [] }
-      return (config.repos as ImageRepo[]).map((repo) => {
-        return execAsync(`docker image rm ${repoTag(repo, name, tag)}`)
-      })
-    })()
-  ])
-  consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
+export const dockerRemoveImage = (config: DudeConfig, name: string, tag: string) => async (ssh?: NodeSSH) => {
+  if (!ssh) {
+    await Promise.all([
+      execAsync(`docker image rm ${name}:${tag}`),
+      (() => {
+        if (!hasRepos(config)) { return [] }
+        return (config.repos as ImageRepo[]).map((repo) => {
+          return execAsync(`docker image rm ${repoTag(repo, name, tag)}`)
+        })
+      })()
+    ])
+    consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
+  }
 }
 
-export const dockerLoadImage = (ssh: NodeSSH, _name: string, tag: string) => {
+export const dockerLoadImage = (_name: string, tag: string) => (ssh?: NodeSSH) => {
+  if (!ssh) { return }
   return ssh.execCommand(`docker load -i images/${tag}.tar`)
-}
-
-export const dockerImageTag = async () => {
-  const date = dayjs().format('YYYYMMDD')
-  const hash = await getLatestCommitHash()
-  return `${date}-${hash}`
 }
 
 export const dockerLogin = async (config: DudeConfig) => {
@@ -126,14 +121,15 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
 }
 
 export const parseDockerCompose = (yml: string) => {
+  const VERSION = '\\"2.2\\"'
   let json: DockerCompose = {
-    version: '\\"2.2\\"',
+    version: VERSION,
     services: {}
   }
 
   try {
     json = YAML.parse(yml)
-    json.version = '\\"2.2\\"'
+    json.version = VERSION
     return json
   } catch {
     return json
@@ -228,7 +224,8 @@ export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: s
   consola.success(`From ${filepath} docker compose up: ${filename}`)
 }
 
-export const dockerPs = async (ssh: NodeSSH, name: string) => {
+export const dockerPs = (name: string) => async (ssh?: NodeSSH) => {
+  if (!ssh) { return [] }
   const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'', { console: false })
   return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(Boolean).filter(({ Names }) => Names?.includes(name)) || []
 }

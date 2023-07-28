@@ -16,14 +16,14 @@ program.command('check')
     const ssh = await sshConnect(config)
 
     if (config.dockerCompose) {
-      const stdout = await dockerPs(ssh, name)
+      const stdout = await dockerPs(name)(ssh)
       console.table(stdout.map(({ Names, Image, State, Status }) => ({ Names, Image, State, Status })))
     }
 
     if (config.k8s) {
       // TODO: Check k8s pod status
       const deploySelectors = await deploymentLabelSelectors(ssh, config)
-      const stdout = await kubeGetPo(ssh, config, deploySelectors)
+      const stdout = await kubeGetPo(config, deploySelectors)(ssh)
       console.table(stdout.map(({ name: Names, image: Image, state }) => {
         const [State] = Object.keys(state)
         const Status = Object.entries(state[State]).map(([key, value]) => `${key}: ${value}`).join(',')

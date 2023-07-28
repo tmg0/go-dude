@@ -1,8 +1,8 @@
 import { program } from 'commander'
 import consola from 'consola'
 import { version } from '../../package.json'
-import { checkVersion, execBuildScript, readConf, readName, uploadImage } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerImageTag, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
+import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName, uploadImage } from '../shared/common'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshConnect } from '../shared/ssh'
 import push from './push'
 
@@ -46,7 +46,7 @@ program.command('build')
     let tag = option?.tag
 
     if (!tag) {
-      tag = await dockerImageTag()
+      tag = await generteImageTagFromGitCommitHash()
     }
 
     let image: string | undefined = await dockerBuild(name, tag, option?.platform)
@@ -55,7 +55,7 @@ program.command('build')
       await dockerTag(config, name, tag)
       await dockerLogin(config)
       const images = await dockerPush(config, name, tag)
-      await dockerRemoveImage(config, name, tag)
+      await dockerRemoveImage(config, name, tag)()
 
       image = await selectImage(config, images)
       await pushImage(config, image, option)
@@ -64,13 +64,13 @@ program.command('build')
     }
 
     await dockerSaveImage(name, tag)
-    await dockerRemoveImage(config, name, tag)
+    await dockerRemoveImage(config, name, tag)()
     await uploadImage(config, name, tag)
     await dockerRemoveImageTar(name, tag)
 
     const ssh = await sshConnect(config)
 
-    await dockerLoadImage(ssh, name, tag)
+    await dockerLoadImage(name, tag)(ssh)
     ssh.dispose()
     await pushImage(config, image, option)
   })

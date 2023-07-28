@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import { hasUncommit } from '../src/shared/git'
-import { dockerImageTag } from '../src/shared/docker'
+import { generteImageTagFromGitCommitHash } from '../src/shared/common'
 
 describe('dude', () => {
   test('should upload local images to server by ssh', () => {
@@ -13,7 +13,7 @@ describe('dude', () => {
   })
 
   test('should generage image tag from day and commit hash', async () => {
-    const tag = await dockerImageTag()
+    const tag = await generteImageTagFromGitCommitHash()
     expect(tag.length).toBe(16)
   })
 })

@@ -11,6 +11,7 @@ import dayjs from 'dayjs'
 import destr from 'destr'
 import { CONFIG_FILENAME } from '../consts'
 import { name, version } from '../../package.json'
+import { getLatestCommitHash } from './git'
 
 export const isString = (value: any): value is string => typeof value === 'string'
 
@@ -130,4 +131,10 @@ export const checkVersion = (): Promise<void> => {
       resolve()
     })
   })
+}
+
+export const generteImageTagFromGitCommitHash = async () => {
+  const date = dayjs().format('YYYYMMDD')
+  const hash = await getLatestCommitHash()
+  return `${date}-${hash}`
 }

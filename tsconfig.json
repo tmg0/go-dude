@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "rootDir": ".",
     "baseUrl": ".",
+    "paths": { "~": ["./src"] },
     "jsx": "preserve",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

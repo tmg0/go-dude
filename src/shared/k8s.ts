@@ -13,12 +13,7 @@ export const deploymentLabelSelectors = async (ssh: NodeSSH, conf: DudeConfig) =
   }
 }
 
-export const kubeGetPodNames = async (ssh: NodeSSH, conf: DudeConfig, selectors: string[]) => {
-  const { stdout } = await ssh.execCommand(`kubectl get pods -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o jsonpath='{.items[*].metadata.name}'`)
-  return stdout.split('#')
-}
-
-export const kubeGetContainers = async (ssh: NodeSSH, conf: DudeConfig, selectors: string[]) => {
+export const kubeGetContainers = (conf: DudeConfig, selectors: string[]) => async (ssh: NodeSSH) => {
   const { stdout } = await ssh.execCommand(`kubectl get pods -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o jsonpath='{.items[*].spec.containers[*].name}'`)
   return stdout.split('#')
 }
@@ -33,7 +28,8 @@ export const kubeExecAsync = async (ssh: NodeSSH, conf: DudeConfig, str: string)
   return stdout
 }
 
-export const kubeGetPo = async (ssh: NodeSSH, conf: DudeConfig, selectors: string[]) => {
+export const kubeGetPo = (conf: DudeConfig, selectors: string[]) => async (ssh?: NodeSSH) => {
+  if (!ssh) { return [] }
   const pods: K8sContainerStatus[] = []
   const stdout = await sshExecAsync(ssh, `kubectl get po -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o json`, { console: false })
   destr<KubectlGetPo>(stdout).items.forEach(({ status }) => {
