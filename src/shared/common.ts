@@ -80,14 +80,16 @@ export const upload = async (config: DudeConfig, from: string, to: string) => {
 
   if (!exist) { await client.mkdir(dir) }
 
+  consola.info('uploading...')
   await client.uploadFile(from, to)
+  consola.success('Image tar upload complete.')
   return client.close()
 }
 
 export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
   const filename = `${tag}.tar`
   const from = join(process.cwd(), '.images', filename)
-  return upload(config, from, `/images/${filename}`)
+  return upload(config, from, `images/${filename}`)
 }
 
 export const execBuildScript = async (config: DudeConfig) => {

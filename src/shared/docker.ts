@@ -35,11 +35,17 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
       throw new Error(message)
     }
 
+    consola.info(`build docker image for ${platform}`)
+
     cmd = 'docker buildx'
     platformOption = `--platform ${platform}`
   }
 
-  await execAsync(exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`)
+  const exec = exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`
+  consola.info(exec)
+  consola.info('building...')
+
+  await execAsync(exec)
   consola.success(`Docker build complete. Image: ${img}`)
   return img
 }
@@ -83,7 +89,7 @@ export const dockerRemoveImage = async (config: DudeConfig, name: string, tag: s
 }
 
 export const dockerLoadImage = (ssh: NodeSSH, _name: string, tag: string) => {
-  return ssh.execCommand(`docker load -i /images/${tag}.tar`)
+  return ssh.execCommand(`docker load -i images/${tag}.tar`)
 }
 
 export const dockerImageTag = async () => {
