@@ -118,13 +118,26 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
   return images
 }
 
+export const parseDockerCompose = (yml: string) => {
+  let json: DockerCompose = {
+    version: '\\"2.2\\"',
+    services: {}
+  }
+
+  try {
+    json = YAML.parse(yml)
+    json.version = '\\"2.2\\"'
+    return json
+  } catch {
+    return json
+  }
+}
+
 export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
   if (!config?.dockerCompose) { throw config }
 
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
-  const json: DockerCompose = YAML.parse(yml)
-
-  json.version = '\\"2.2\\"'
+  const json: DockerCompose = parseDockerCompose(yml)
 
   const { image } = json?.services[name] || {}
 
@@ -138,14 +151,21 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
   })
 
   if (confirmed) {
-    const temp = await consola.prompt('Pick a service template.', {
-      type: 'select',
-      options: Object.keys(json?.services || {})
-    }) as unknown as string
-
+    const services = Object.keys(json?.services || {})
     const PLACEHOLDER = 'PLACEHOLDER'
 
-    json.services[name] = { ...json.services[temp], image: PLACEHOLDER }
+    if (services.length) {
+      const temp = await consola.prompt('Pick a service template.', {
+        type: 'select',
+        options: services
+      }) as unknown as string
+
+      json.services[name] = { ...json.services[temp], image: PLACEHOLDER }
+    }
+
+    if (!services.length) {
+      json.services[name] = { network_mode: 'host', image: PLACEHOLDER }
+    }
 
     await backupDockerComposeFile(ssh, config)
 

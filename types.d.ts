@@ -32,9 +32,9 @@ interface DudeConfig {
 
 interface DockerComposeService {
   image: string
-  volumns: string[]
-  ports: string[]
-  network_mode: string
+  volumns?: string[]
+  ports?: string[]
+  network_mode:? string
 }
 
 interface DockerCompose {
