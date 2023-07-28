@@ -71,6 +71,6 @@ program.command('build')
     const ssh = await sshConnect(config)
 
     await dockerLoadImage(ssh, name, tag)
-    await pushImage(config, image, option)
     ssh.dispose()
+    await pushImage(config, image, option)
   })
