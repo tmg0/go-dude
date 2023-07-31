@@ -14,3 +14,5 @@ export const sshExecAsync = async (ssh: NodeSSH, cmd: string, options: { console
   if (options.console) { console.log(stdout) }
   return stdout
 }
+
+export const sshExist = (config: DudeConfig) => config.ssh && config.ssh.host && config.ssh.password

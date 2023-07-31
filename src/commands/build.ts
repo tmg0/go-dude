@@ -3,7 +3,7 @@ import consola from 'consola'
 import { version } from '../../package.json'
 import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName, uploadImage } from '../shared/common'
 import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
-import { sshConnect } from '../shared/ssh'
+import { sshConnect, sshExist } from '../shared/ssh'
 import push from './push'
 
 const selectImage = async (config: DudeConfig, images?: string[]) => {
@@ -24,6 +24,7 @@ const selectImage = async (config: DudeConfig, images?: string[]) => {
 
 const pushImage = async (config: DudeConfig, image: string | undefined, option: any) => {
   if (!image) { return }
+  if (!sshExist(config)) { return }
   const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
     type: 'confirm'
   })
