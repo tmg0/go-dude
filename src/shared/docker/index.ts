@@ -10,8 +10,22 @@ import semver from 'semver'
 import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath, isFileExist } from '../common'
 import { sshExecAsync } from '../ssh'
 
+/**
+ * Check if have repo in dude config file.
+ *
+ * @param {DudeConfig} config - dude config
+ * @returns {boolean}
+ */
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
 
+/**
+ * Generate repo tag like habor.
+ *
+ * @param repo - repo config in dude config file
+ * @param name - service name
+ * @param tag - docker image tag
+ * @returns {string}
+ */
 const repoTag = (repo: ImageRepo, name: string, tag: string) => `${repo.host}/${repo.project}/${name}:${tag}`
 
 export const dockerBuild = async (name: string, tag: string, platform?: string) => {
