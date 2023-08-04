@@ -12,6 +12,7 @@ import destr from 'destr'
 import { CONFIG_FILENAME } from '../consts'
 import { name, version } from '../../package.json'
 import { getLatestCommitHash } from './git'
+import { sshExecAsync } from './ssh'
 
 export const isString = (value: any): value is string => typeof value === 'string'
 
@@ -137,4 +138,10 @@ export const generteImageTagFromGitCommitHash = async () => {
   const date = dayjs().format('YYYYMMDD')
   const hash = await getLatestCommitHash()
   return `${date}-${hash}`
+}
+
+export const isFileExist = (path: string) => async (ssh: NodeSSH) => {
+  if (!ssh) { return }
+  const stdout = await sshExecAsync(ssh, `[ -e "${path}" ] && echo "true" || echo "false"`)
+  return destr(stdout) || false
 }

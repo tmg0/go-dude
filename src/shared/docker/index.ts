@@ -6,7 +6,7 @@ import { join } from 'pathe'
 import YAML from 'yaml'
 import destr from 'destr'
 import semver from 'semver'
-import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath } from '../common'
+import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath, isFileExist } from '../common'
 import { sshExecAsync } from '../ssh'
 
 const hasRepos = (config: DudeConfig) => config.repos && config.repos.length > 0
@@ -138,6 +138,10 @@ export const parseDockerCompose = (yml: string) => {
 
 export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
   if (!config?.dockerCompose) { throw config }
+
+  const dockerComposeFileExist = await isFileExist(config.dockerCompose.file)(ssh)
+
+  if (!dockerComposeFileExist) { throw consola.error(new Error(`Can not find the docker compose file: ${config.dockerCompose.file}`)) }
 
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
   const json: DockerCompose = parseDockerCompose(yml)
