@@ -145,3 +145,10 @@ export const isFileExist = (path: string) => async (ssh: NodeSSH) => {
   const stdout = await sshExecAsync(ssh, `[ -e "${path}" ] && echo "true" || echo "false"`)
   return destr(stdout) || false
 }
+
+export const ensureFile = (path: string) => async (ssh: NodeSSH) => {
+  const exist = await isFileExist(path)(ssh)
+  if (!exist) {
+    await sshExecAsync(ssh, `touch ${path}`)
+  }
+}
