@@ -154,9 +154,7 @@ export const parseDockerCompose = (yml: string) => {
 export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig, name: string) => {
   if (!config?.dockerCompose) { throw config }
 
-  const dockerComposeFileExist = await isFileExist(config.dockerCompose.file)(ssh)
-
-  if (!dockerComposeFileExist) { throw consola.error(new Error(`Can not find the docker compose file: ${config.dockerCompose.file}`)) }
+  await ensureDockerComposeFile(config)(ssh)
 
   const { stdout: yml } = await ssh.execCommand(`cat ${config.dockerCompose.file}`)
   const json: DockerCompose = parseDockerCompose(yml)
@@ -247,4 +245,22 @@ export const dockerPs = (name: string) => async (ssh?: NodeSSH) => {
   if (!ssh) { return [] }
   const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'', { console: false })
   return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(Boolean).filter(({ Names }) => Names?.includes(name)) || []
+}
+
+export const ensureDockerComposeFile = (config: DudeConfig) => async (ssh?: NodeSSH) => {
+  if (!ssh) { return }
+  if (!config?.dockerCompose) { throw config }
+  const [remoteExist, templateExist] = await Promise.all([isFileExist(config.dockerCompose.file)(ssh), isFileExist(getDockerComposeFileName(config))()])
+  if (!remoteExist && templateExist) {
+    const confirmed = await consola.prompt(`Do not exist docker compose file under ${getDockerComposeFilePath(config)}, create a new file from template?`, {
+      type: 'confirm'
+    })
+
+    if (confirmed) {
+      await sshExecAsync(ssh, `touch ${config.dockerCompose.file}`)
+      return
+    }
+
+    throw consola.error(new Error(`Can not find the docker compose file: ${config.dockerCompose.file}`))
+  }
 }

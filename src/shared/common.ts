@@ -4,7 +4,7 @@ import { filename } from 'pathe/utils'
 import consola from 'consola'
 import { colors } from 'consola/utils'
 import { loadConfig } from 'c12'
-import fse from 'fs-extra'
+import fse, { pathExistsSync } from 'fs-extra'
 import { Client } from 'node-scp'
 import { NodeSSH } from 'node-ssh'
 import dayjs from 'dayjs'
@@ -140,13 +140,18 @@ export const generteImageTagFromGitCommitHash = async () => {
   return `${date}-${hash}`
 }
 
-export const isFileExist = (path: string) => async (ssh: NodeSSH) => {
-  if (!ssh) { return }
+export const isFileExist = (path: string) => async (ssh?: NodeSSH) => {
+  if (!ssh) {
+    const file = join(process.cwd(), filename(path))
+    return pathExistsSync(file)
+  }
+
   const stdout = await sshExecAsync(ssh, `[ -e "${path}" ] && echo "true" || echo "false"`)
   return destr(stdout) || false
 }
 
-export const ensureFile = (path: string) => async (ssh: NodeSSH) => {
+export const ensureFile = (path: string) => async (ssh?: NodeSSH) => {
+  if (!ssh) { return }
   const exist = await isFileExist(path)(ssh)
   if (!exist) {
     await sshExecAsync(ssh, `touch ${path}`)
