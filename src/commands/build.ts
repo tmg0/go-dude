@@ -42,7 +42,7 @@ program.command('build')
     const config = await readConf(option.config)
     const name = await readName(config)
 
-    if (config.build.script) { await execBuildScript(config) }
+    if (config.build?.script) { await execBuildScript(config) }
 
     let tag = option?.tag
 
