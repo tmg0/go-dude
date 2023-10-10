@@ -54,7 +54,10 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
     platformOption = `--platform ${platform}`
   }
 
-  const exec = exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`
+  let exec = exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`
+
+  exec += '--no-cache'
+
   consola.info(exec)
   consola.info('building...')
 
