@@ -1,8 +1,8 @@
 import { program } from 'commander'
 import consola from 'consola'
 import { version } from '../../package.json'
-import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName, uploadImage } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerRemoveImageTar, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
+import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName } from '../shared/common'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshConnect, sshExist } from '../shared/ssh'
 import push from './push'
 
@@ -66,8 +66,6 @@ program.command('build')
 
     await dockerSaveImage(name, tag)
     await dockerRemoveImage(config, name, tag)()
-    await uploadImage(config, name, tag)
-    await dockerRemoveImageTar(name, tag)
 
     const ssh = await sshConnect(config)
 
