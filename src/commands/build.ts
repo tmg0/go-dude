@@ -2,8 +2,8 @@ import { program } from 'commander'
 import consola from 'consola'
 import { version } from '../../package.json'
 import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLoadImage, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
-import { sshConnect, sshExist } from '../shared/ssh'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
+import { sshExist } from '../shared/ssh'
 import push from './push'
 
 const selectImage = async (config: DudeConfig, images?: string[]) => {
@@ -67,9 +67,5 @@ program.command('build')
     await dockerSaveImage(name, tag)
     await dockerRemoveImage(config, name, tag)()
 
-    const ssh = await sshConnect(config)
-
-    await dockerLoadImage(name, tag)(ssh)
-    ssh.dispose()
     await pushImage(config, image, option)
   })

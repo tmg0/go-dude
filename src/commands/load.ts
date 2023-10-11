@@ -2,7 +2,7 @@ import { program } from 'commander'
 import { version } from '../../package.json'
 import { checkVersion, readConf, readName, uploadImage } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
-import { dockerRemoveImageTar } from '../shared/docker'
+import { dockerLoadImage, dockerRemoveImageTar } from '../shared/docker'
 
 program.command('check')
   .version(version)
@@ -19,6 +19,8 @@ program.command('check')
 
     await uploadImage(config, name, tag)
     await dockerRemoveImageTar(name, tag)
+
+    await dockerLoadImage(name, tag)(ssh)
 
     ssh.dispose()
   })
