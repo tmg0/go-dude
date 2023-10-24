@@ -3,10 +3,6 @@
 import { defineCommand, runMain } from 'citty'
 import { name, version } from '../package.json'
 
-import './src/commands/push'
-import './src/commands/build'
-import './src/commands/check'
-
 const main = defineCommand({
   meta: { name, version, description: 'Dude CLI' },
   subCommands: {
