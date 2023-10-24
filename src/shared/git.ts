@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import consola from 'consola'
 import { execAsync } from './common'
 
@@ -9,10 +10,14 @@ export const hasUncommit = async () => {
   return !!res
 }
 
-export const getLatestCommitHash = async () => {
+export const getLatestCommit = async () => {
   const valid = !(await hasUncommit())
 
-  if (valid) { return execAsync(gitCmd('log --pretty=format:"%h" -n 1')) }
+  if (valid) {
+    const output = await execAsync(gitCmd('log --pretty=format:"%h %ci" -n 1'))
+    const [hash, ...args] = output.split(' ')
+    return { hash, time: dayjs(args.join(' ')) }
+  }
 
   const message = 'Has uncommitted change.'
   consola.error(message)

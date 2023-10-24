@@ -11,7 +11,7 @@ import dayjs from 'dayjs'
 import destr from 'destr'
 import { CONFIG_FILENAME } from '../consts'
 import { name, version } from '../../package.json'
-import { getLatestCommitHash } from './git'
+import { getLatestCommit } from './git'
 import { sshExecAsync } from './ssh'
 
 export const isString = (value: any): value is string => typeof value === 'string'
@@ -59,7 +59,7 @@ export const readConf = async (path = process.cwd()) => {
   return config
 }
 
-export const execAsync = (cmd: string, options: { console?: boolean } = { console: true }) => {
+export const execAsync = (cmd: string, options: { console?: boolean } = { console: true }): Promise<string> => {
   return new Promise((resolve, reject) => {
     const p = exec(cmd, (error, stdout) => {
       if (error) {
@@ -135,8 +135,8 @@ export const checkVersion = (): Promise<void> => {
 }
 
 export const generteImageTagFromGitCommitHash = async () => {
-  const date = dayjs().format('YYYYMMDD')
-  const hash = await getLatestCommitHash()
+  const { hash, time } = await getLatestCommit()
+  const date = time.format('YYYYMMDD')
   return `${date}-${hash}`
 }
 
