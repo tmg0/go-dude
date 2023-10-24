@@ -32,7 +32,7 @@ export default defineCommand({
   args: {
     name: { type: 'positional', description: 'Image URL / Image tag', required: true },
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
-    tag: { type: 'string', alias: 't', description: 'Only replace image tag.' }
+    tag: { type: 'boolean', alias: 't', description: 'Only replace image tag.' }
   },
   async run ({ args }) {
     await checkVersion()
