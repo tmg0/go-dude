@@ -31,7 +31,7 @@ const pushImage = async (config: DudeConfig, image: string | undefined, option: 
 }
 
 export default defineCommand({
-  meta: { name: 'build', description: 'Build project' },
+  meta: { name: 'build', description: 'Build project as a docker image or tar file.' },
   args: {
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
     platform: { type: 'string', alias: 'p', description: 'Declare target image build platform.' },
