@@ -1,11 +1,10 @@
-import { program } from 'commander'
-import { version } from '../../package.json'
+import { defineCommand } from 'citty'
 import { checkVersion, readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { dockerComposeServiceImage, replaceImage } from '../shared/docker'
 import { deploymentLabelSelectors, kubeGetContainers, kubeSetImage } from '../shared/k8s'
 
-const run = async (str: any, option: any) => {
+export const run = async (str: any, option: any) => {
   const config = await readConf(option.config)
   const name = await readName(config)
 
@@ -28,15 +27,15 @@ const run = async (str: any, option: any) => {
   ssh.dispose()
 }
 
-program.command('push')
-  .version(version)
-  .description('Push image to docker-compose file by ssh.')
-  .argument('<string>', 'Image URL / Image tag')
-  .option('-t --tag', 'Only replace image tag.')
-  .option('-c --config <char>', 'Declare dude config file.')
-  .action(async (str, option) => {
+export default defineCommand({
+  meta: { name: 'push', description: 'Push image to docker-compose file by ssh.' },
+  args: {
+    name: { type: 'positional', description: 'Image URL / Image tag', required: true },
+    config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
+    tag: { type: 'string', alias: 't', description: 'Only replace image tag.' }
+  },
+  async run ({ args }) {
     await checkVersion()
-    run(str, option)
-  })
-
-export default run
+    run(args.name, args)
+  }
+})

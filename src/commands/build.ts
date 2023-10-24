@@ -1,10 +1,9 @@
-import { program } from 'commander'
+import { defineCommand } from 'citty'
 import consola from 'consola'
-import { version } from '../../package.json'
 import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName } from '../shared/common'
 import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
 import { sshExist } from '../shared/ssh'
-import push from './push'
+import { run as push } from './push'
 
 const selectImage = async (config: DudeConfig, images?: string[]) => {
   if (!config?.ssh?.host) { return }
@@ -31,13 +30,14 @@ const pushImage = async (config: DudeConfig, image: string | undefined, option: 
   if (confirmed) { await push(image, { ...option, tag: undefined }) }
 }
 
-program.command('build')
-  .version(version)
-  .description('build project')
-  .option('-c --config <char>', 'Declare dude config file.')
-  .option('-p --platform <char>', 'Declare target image build platform.')
-  .option('-t --tag <char>', 'Named image tag without git hash.')
-  .action(async (option) => {
+export default defineCommand({
+  meta: { name: 'build', description: 'Build project' },
+  args: {
+    config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
+    platform: { type: 'string', alias: 'p', description: 'Declare target image build platform.' },
+    tag: { type: 'string', alias: 't', description: 'Named image tag without git hash.' }
+  },
+  async run ({ args: option }) {
     await checkVersion()
     const config = await readConf(option.config)
     const name = await readName(config)
@@ -68,4 +68,5 @@ program.command('build')
     await dockerRemoveImage(config, name, tag)()
 
     await pushImage(config, image, option)
-  })
+  }
+})

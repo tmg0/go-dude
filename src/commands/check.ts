@@ -1,17 +1,17 @@
-import { program } from 'commander'
-import { version } from '../../package.json'
+import { defineCommand } from 'citty'
 import { checkVersion, readConf, readName } from '../shared/common'
 import { sshConnect } from '../shared/ssh'
 import { deploymentLabelSelectors, kubeGetPo } from '../shared/k8s'
 import { dockerPs } from '../shared/docker'
 
-program.command('check')
-  .version(version)
-  .description('build project')
-  .option('-c --config <char>', 'Declare dude config file.')
-  .action(async (option) => {
+export default defineCommand({
+  meta: { name: 'check', description: 'Check container status by ssh.' },
+  args: {
+    config: { type: 'string', alias: 'c', description: 'Declare dude config file.' }
+  },
+  async run ({ args }) {
     await checkVersion()
-    const config = await readConf(option.config)
+    const config = await readConf(args.config)
     const name = await readName(config)
     const ssh = await sshConnect(config)
 
@@ -38,4 +38,5 @@ program.command('check')
     }
 
     ssh.dispose()
-  })
+  }
+})
