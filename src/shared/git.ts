@@ -14,7 +14,7 @@ export const getLatestCommit = async () => {
   const valid = !(await hasUncommit())
 
   if (valid) {
-    const output = await execAsync(gitCmd('log --pretty=format:"%h %ci" -n 1'))
+    const output = await execAsync(gitCmd('log --pretty=format:"%h %ci" -n 1'), { console: false })
     const [hash, ...args] = output.split(' ')
     return { hash, time: dayjs(args.join(' ')) }
   }
