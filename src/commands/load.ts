@@ -4,7 +4,7 @@ import { sshConnect } from '../shared/ssh'
 import { dockerLoadImage, dockerRemoveImageTar } from '../shared/docker'
 
 export default defineCommand({
-  meta: { name: 'load', description: 'Load locale image tar' },
+  meta: { name: 'load', description: 'Load locale image tar at service by ssh.' },
   args: {
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
     tag: { type: 'string', alias: 't', description: 'Target image tag.' }

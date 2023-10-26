@@ -59,8 +59,8 @@ devDependencies:
     specifier: ^7.5.0
     version: 7.5.0
   ctizen:
-    specifier: ^0.0.2
-    version: 0.0.2(citty@0.1.4)(typescript@4.9.5)
+    specifier: ^0.0.3
+    version: 0.0.3(citty@0.1.4)(typescript@4.9.5)
   eslint:
     specifier: ^8.28.0
     version: 8.28.0
@@ -1447,8 +1447,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ctizen@0.0.2(citty@0.1.4)(typescript@4.9.5):
-    resolution: {integrity: sha512-/jtyhRTlf0/fKglYB0rcCYDMgsjTI68V2uG4g3lT5+VcQ22EhiIKWx9y9jcWVFxAwCave3hyzfQFy7RZ5BHpeA==}
+  /ctizen@0.0.3(citty@0.1.4)(typescript@4.9.5):
+    resolution: {integrity: sha512-vSBkY5Q/X7VWl442VJVZdUS/UIaIOq2IyA8ZfzYsAkyoj5qbOp0m9+qIiG0fblBjdCRSr5D+J6w7fLrhSpi6xw==}
     hasBin: true
     peerDependencies:
       citty: '>=0.1.0'
