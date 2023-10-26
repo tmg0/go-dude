@@ -2,3 +2,5 @@ node_modules
 dist
 .images
 .vscode
+.ctizen
+.output
