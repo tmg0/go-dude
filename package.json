@@ -1,6 +1,6 @@
 {
   "name": "go-dude",
-  "version": "0.4.0-rc.9",
+  "version": "0.4.0-rc.10",
   "description": "Dude CLI",
   "bin": {
     "dude": "./.output/index.mjs"
