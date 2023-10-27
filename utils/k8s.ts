@@ -1,7 +1,5 @@
 import { NodeSSH } from 'node-ssh'
-import consola from 'consola'
 import destr from 'destr'
-import { sshExecAsync } from './ssh'
 
 export const deploymentLabelSelectors = async (ssh: NodeSSH, conf: DudeConfig) => {
   const { stdout } = await ssh.execCommand(`kubectl get deployment ${conf.k8s.deployment} -n ${conf.k8s.namespace} -o json`)

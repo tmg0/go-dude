@@ -1,9 +1,3 @@
-import { defineCommand } from 'citty'
-import { checkVersion, readConf, readName } from '../utils/common'
-import { sshConnect } from '../utils/ssh'
-import { dockerComposeServiceImage, replaceImage } from '../utils/docker'
-import { deploymentLabelSelectors, kubeGetContainers, kubeSetImage } from '../utils/k8s'
-
 export const run = async (str: any, option: any) => {
   const config = await readConf(option.config)
   const name = await readName(config)

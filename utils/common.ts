@@ -10,9 +10,6 @@ import { NodeSSH } from 'node-ssh'
 import dayjs from 'dayjs'
 import destr from 'destr'
 import { name, version } from '../package.json'
-import { CONFIG_FILENAME } from './consts'
-import { getLatestCommit } from './git'
-import { sshExecAsync } from './ssh'
 
 export const isString = (value: any): value is string => typeof value === 'string'
 

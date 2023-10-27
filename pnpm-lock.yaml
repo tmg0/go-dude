@@ -59,8 +59,8 @@ devDependencies:
     specifier: ^7.5.0
     version: 7.5.0
   ctizen:
-    specifier: ^0.0.4
-    version: 0.0.4(citty@0.1.4)(typescript@4.9.5)
+    specifier: ^0.0.8
+    version: 0.0.8(citty@0.1.4)(typescript@4.9.5)
   eslint:
     specifier: ^8.28.0
     version: 8.28.0
@@ -1446,8 +1446,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ctizen@0.0.4(citty@0.1.4)(typescript@4.9.5):
-    resolution: {integrity: sha512-OlxGwEYOcHmDUOKbho5EZrIl+R/3OWF6XlDcywLVCifwYep7028sASjr+NeQAPYw+qQ1wbSbevzqts1XhyLRsQ==}
+  /ctizen@0.0.8(citty@0.1.4)(typescript@4.9.5):
+    resolution: {integrity: sha512-67RMBl7TVc9W3Y1pdYYPEIN0Yc9XNTim40RLfQxz3W8RqAdYnirwLJozQiIsAVnRSpZNdcW+x5hUKNvaNBVyXQ==}
     hasBin: true
     peerDependencies:
       citty: '>=0.1.0'
@@ -1888,7 +1888,7 @@ packages:
       eslint: 8.28.0
       eslint-plugin-es: 4.1.0(eslint@8.28.0)
       eslint-utils: 3.0.0(eslint@8.28.0)
-      ignore: 5.2.1
+      ignore: 5.2.4
       is-core-module: 2.11.0
       minimatch: 3.1.2
       resolve: 1.22.1
@@ -1904,7 +1904,7 @@ packages:
       eslint: 8.28.0
       eslint-plugin-es: 3.0.1(eslint@8.28.0)
       eslint-utils: 2.1.0
-      ignore: 5.2.1
+      ignore: 5.2.4
       minimatch: 3.1.2
       resolve: 1.22.1
       semver: 6.3.0
@@ -2277,9 +2277,9 @@ packages:
       defu: 6.1.3
       https-proxy-agent: 5.0.1
       mri: 1.2.0
-      node-fetch-native: 1.2.0
+      node-fetch-native: 1.4.0
       pathe: 1.1.1
-      tar: 6.1.15
+      tar: 6.2.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2863,6 +2863,7 @@ packages:
       pathe: 1.1.1
       pkg-types: 1.0.3
       ufo: 1.1.2
+    dev: false
 
   /mlly@1.4.2:
     resolution: {integrity: sha512-i/Ykufi2t1EZ6NaPLdfnZk2AX8cs0d+mTzVKuPfqPKPatxLApaBoxJQ9x1/uckXtrS/U5oisPMDkNs0yQTaBRg==}
@@ -2921,13 +2922,8 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /node-fetch-native@1.2.0:
-    resolution: {integrity: sha512-5IAMBTl9p6PaAjYCnMv5FmqIF6GcZnawAVnzaCG0rX2aYZJ4CxEkZNtVPuTRug7fL7wyM5BQYTlAzcyMPi6oTQ==}
-    dev: false
-
   /node-fetch-native@1.4.0:
     resolution: {integrity: sha512-F5kfEj95kX8tkDhUCYdV8dg3/8Olx/94zB8+ZNthFs6Bz31UpUi8Xh40TN3thLwXgrwXry1pEg9lJ++tLWTcqA==}
-    dev: true
 
   /node-scp@0.0.22:
     resolution: {integrity: sha512-ojo0gGFKmCQqwKKlD7PTeb9w9Xd9uLMHIs1kc6TO/dcBrdRxZ93GuOSsR0gnnoHmOwxBhnF82cE5jAQ0HPDePA==}
@@ -3179,7 +3175,7 @@ packages:
     resolution: {integrity: sha512-hM58GKXOcj8WTqUXnsQyJYXdeAPbythQgEF3nTcEo+nkD49chjQ9IKm/QJy9xf6JakXptz86h7ecP2024rrLaQ==}
     dependencies:
       jsonc-parser: 3.2.0
-      mlly: 1.3.0
+      mlly: 1.4.2
       pathe: 1.1.1
 
   /pkg-types@1.0.3:
@@ -3659,18 +3655,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tar@6.1.15:
-    resolution: {integrity: sha512-/zKt9UyngnxIT/EAGYuxaMYgOIJiP81ab9ZfkILq4oNLPFX50qyYmu7jRj9qeXoxmJHjGlbH0+cm2uy1WCs10A==}
-    engines: {node: '>=10'}
-    dependencies:
-      chownr: 2.0.0
-      fs-minipass: 2.1.0
-      minipass: 5.0.0
-      minizlib: 2.1.2
-      mkdirp: 1.0.4
-      yallist: 4.0.0
-    dev: false
-
   /tar@6.2.0:
     resolution: {integrity: sha512-/Wo7DcT0u5HUV486xg675HtjNd3BXZ6xDbzsCUZPt5iw8bTQ63bP0Raut3mvro9u+CUyq7YQd8Cx55fsZXxqLQ==}
     engines: {node: '>=10'}
@@ -3681,7 +3665,6 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
-    dev: true
 
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -3883,6 +3866,7 @@ packages:
 
   /ufo@1.1.2:
     resolution: {integrity: sha512-TrY6DsjTQQgyS3E3dBaOXf0TpPD8u9FVrVYmKVegJuFw51n/YB9XPt+U6ydzFG5ZIN7+DIjPbNmXoBj9esYhgQ==}
+    dev: false
 
   /ufo@1.3.1:
     resolution: {integrity: sha512-uY/99gMLIOlJPwATcMVYfqDSxUR9//AUcgZMzwfSTJPDKzA1S8mX4VLqa+fiAtveraQUBCz4FFcwVZBGbwBXIw==}

@@ -1,8 +1,3 @@
-import { defineCommand } from 'citty'
-import { checkVersion, readConf, readName, uploadImage } from '../utils/common'
-import { sshConnect } from '../utils/ssh'
-import { dockerLoadImage, dockerRemoveImageTar } from '../utils/docker'
-
 export default defineCommand({
   meta: { name: 'load', description: 'Load locale image tar at service by ssh.' },
   args: {

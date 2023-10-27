@@ -7,8 +7,6 @@ import { nanoid } from 'nanoid'
 import YAML from 'yaml'
 import destr from 'destr'
 import semver from 'semver'
-import { backupDockerComposeFile, execAsync, getDockerComposeFileName, getDockerComposeFilePath, isFileExist } from '../common'
-import { sshExecAsync } from '../ssh'
 
 /**
  * Check if have repo in dude config file.

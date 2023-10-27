@@ -1,6 +1,4 @@
 import dayjs from 'dayjs'
-import consola from 'consola'
-import { execAsync } from './common'
 
 export const gitCmd = (cmd: string) => `git -C ${process.cwd()} ${cmd}`
 

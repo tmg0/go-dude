@@ -1,5 +1,4 @@
 import { NodeSSH } from 'node-ssh'
-import consola from 'consola'
 
 const ssh = new NodeSSH()
 
