@@ -1,8 +1,8 @@
 import { defineCommand } from 'citty'
 import consola from 'consola'
-import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName } from '../shared/common'
-import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLogin, dockerPush, dockerTag } from '../shared/docker'
-import { sshExist } from '../shared/ssh'
+import { checkVersion, execBuildScript, generteImageTagFromGitCommitHash, readConf, readName } from '../utils/common'
+import { dockerBuild, dockerSaveImage, dockerRemoveImage, dockerLogin, dockerPush, dockerTag } from '../utils/docker'
+import { sshExist } from '../utils/ssh'
 import { run as push } from './push'
 
 const selectImage = async (config: DudeConfig, images?: string[]) => {

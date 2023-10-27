@@ -1,8 +1,8 @@
 import { defineCommand } from 'citty'
-import { checkVersion, readConf, readName } from '../shared/common'
-import { sshConnect } from '../shared/ssh'
-import { deploymentLabelSelectors, kubeGetPo } from '../shared/k8s'
-import { dockerPs } from '../shared/docker'
+import { checkVersion, readConf, readName } from '../utils/common'
+import { sshConnect } from '../utils/ssh'
+import { deploymentLabelSelectors, kubeGetPo } from '../utils/k8s'
+import { dockerPs } from '../utils/docker'
 
 export default defineCommand({
   meta: { name: 'check', description: 'Check container status by ssh.' },
