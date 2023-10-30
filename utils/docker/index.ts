@@ -1,12 +1,5 @@
 import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
-import consola from 'consola'
-import { resolvePath } from 'mlly'
-import { join } from 'pathe'
-import { nanoid } from 'nanoid'
-import YAML from 'yaml'
-import destr from 'destr'
-import semver from 'semver'
 
 /**
  * Check if have repo in dude config file.

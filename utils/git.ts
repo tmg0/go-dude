@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 export const gitCmd = (cmd: string) => `git -C ${process.cwd()} ${cmd}`
 
 export const hasUncommit = async () => {
