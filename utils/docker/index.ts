@@ -1,4 +1,3 @@
-import fse from 'fs-extra'
 import { NodeSSH } from 'node-ssh'
 
 /**
