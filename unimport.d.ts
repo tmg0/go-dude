@@ -9,7 +9,7 @@ declare global {
   const colors: typeof import('consola/utils')['colors']
   const consola: typeof import('consola')['default']
   const dayjs: typeof import('dayjs')['default']
-  const defineCommand: typeof import('citty')['defineCommand']
+  const defineCommand: typeof import('ctizen')['defineCommand']
   const deploymentLabelSelectors: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/k8s')['deploymentLabelSelectors']
   const destr: typeof import('destr')['destr']
   const dirname: typeof import('pathe')['dirname']
