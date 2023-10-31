@@ -9,7 +9,9 @@ declare global {
   const colors: typeof import('consola/utils')['colors']
   const consola: typeof import('consola')['default']
   const dayjs: typeof import('dayjs')['default']
-  const defineCommand: typeof import('ctizen')['defineCommand']
+  const defineCommand: typeof import('citty')['defineCommand']
+  const defineConfig: typeof import('ctizen')['defineConfig']
+  const defineMiddleware: typeof import('ctizen')['defineMiddleware']
   const deploymentLabelSelectors: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/k8s')['deploymentLabelSelectors']
   const destr: typeof import('destr')['destr']
   const dirname: typeof import('pathe')['dirname']
@@ -66,4 +68,5 @@ declare global {
   const sshExist: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/ssh')['sshExist']
   const upload: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/common')['upload']
   const uploadImage: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/common')['uploadImage']
+  const versionGlobal: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/middleware/version.global')['default']
 }
