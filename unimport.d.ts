@@ -68,5 +68,4 @@ declare global {
   const sshExist: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/ssh')['sshExist']
   const upload: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/common')['upload']
   const uploadImage: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/utils/common')['uploadImage']
-  const versionGlobal: typeof import('C:/Users/zekun.jin/Documents/Projects/go-dude/middleware/version.global')['default']
 }

@@ -15,7 +15,5 @@ export const getLatestCommit = async () => {
     return { hash, time: dayjs(args.join(' ')) }
   }
 
-  const message = 'Has uncommitted change.'
-  consola.error(message)
-  throw new Error(message)
+  throw new Error('Has uncommitted change.')
 }

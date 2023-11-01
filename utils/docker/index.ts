@@ -32,11 +32,7 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
     const version = await dockerVersion()
     const isSupportBuildx = semver.gt(version, '19.3.0')
 
-    if (!isSupportBuildx) {
-      const message = 'Local docker version do not support buildx.'
-      consola.error(message)
-      throw new Error(message)
-    }
+    if (!isSupportBuildx) { throw new Error('Local docker version do not support buildx.')}
 
     consola.info(`build docker image for ${platform}`)
 
@@ -191,7 +187,7 @@ export const dockerComposeServiceImage = async (ssh: NodeSSH, config: DudeConfig
     return PLACEHOLDER
   }
 
-  throw consola.error(new Error(`Can not find the service named: ${name}`))
+  throw new Error(`Can not find the service named: ${name}`)
 }
 
 export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: string, oldValue: string, newValue: string) => {
@@ -258,6 +254,6 @@ export const ensureDockerComposeFile = (config: DudeConfig) => async (ssh?: Node
       return
     }
 
-    throw consola.error(new Error(`Can not find the docker compose file: ${config.dockerCompose.file}`))
+    throw new Error(`Can not find the docker compose file: ${config.dockerCompose.file}`)
   }
 }

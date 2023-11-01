@@ -13,38 +13,25 @@ export const readName = async (config: DudeConfig): Promise<string> => {
     const name = (await fse.readJson(path))?.name
     if (name) { return name }
 
-    const message = 'Please declare a project name in config file or package.json.'
-    consola.error(message)
-    throw new Error(message)
+    throw new Error('Please declare a project name in config file or package.json.')
   } catch (error) {
-    consola.error(error)
     throw error
   }
 }
 
 export const getDockerComposeFilePath = (config: DudeConfig) => {
   if (config.dockerCompose && config.dockerCompose.file) { return dirname(config.dockerCompose.file) }
-
-  const message = 'Please declare the docker compose file path.'
-  consola.error(message)
-  throw new Error(message)
+  throw new Error('Please declare the docker compose file path.')
 }
 
 export const getDockerComposeFileName = (config: DudeConfig) => {
   if (config.dockerCompose && config.dockerCompose.file) { return filename(config.dockerCompose.file) }
-
-  const message = 'Please declare the docker compose file name.'
-  consola.error(message)
-  throw new Error(message)
+  throw new Error('Please declare the docker compose file name.')
 }
 
 export const readConf = async (path = process.cwd()) => {
   const { config } = await loadConfig<DudeConfig>({ name: CONFIG_FILENAME, cwd: path })
-  if (!config) {
-    const error = new Error('Can not find dude config file.')
-    consola.error(error)
-    throw error
-  }
+  if (!config) { throw new Error('Can not find dude config file.') }
   return config
 }
 
