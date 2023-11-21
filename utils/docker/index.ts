@@ -32,7 +32,7 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
     const version = await dockerVersion()
     const isSupportBuildx = semver.gt(version, '19.3.0')
 
-    if (!isSupportBuildx) { throw new Error('Local docker version do not support buildx.')}
+    if (!isSupportBuildx) { throw new Error('Local docker version do not support buildx.') }
 
     consola.info(`build docker image for ${platform}`)
 
