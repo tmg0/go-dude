@@ -9,14 +9,10 @@ export const readName = async (config: DudeConfig): Promise<string> => {
   if (config.name) { return config.name }
   const path = join(process.cwd(), 'package.json')
 
-  try {
-    const name = (await fse.readJson(path))?.name
-    if (name) { return name }
+  const name = (await fse.readJson(path))?.name
+  if (name) { return name }
 
-    throw new Error('Please declare a project name in config file or package.json.')
-  } catch (error) {
-    throw error
-  }
+  throw new Error('Please declare a project name in config file or package.json.')
 }
 
 export const getDockerComposeFilePath = (config: DudeConfig) => {

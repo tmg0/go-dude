@@ -240,4 +240,10 @@ export const dockerPs = (name: string) => async (ssh?: NodeSSH) => {
   return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(Boolean).filter(({ Names }) => Names?.includes(name)) || []
 }
 
-export const isDockerRunning = async () => {}
+export const isDockerRunning = async () => {
+  try {
+    await execAsync('docker info', { console: false })
+  } catch {
+    throw new Error('Docker engine is not running.')
+  }
+}

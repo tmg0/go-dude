@@ -34,6 +34,7 @@ export default defineCommand({
   },
   async run ({ args: option }) {
     await checkVersion()
+    await isDockerRunning()
     const config = await readConf(option.config)
     const name = await readName(config)
 
