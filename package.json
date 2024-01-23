@@ -3,11 +3,11 @@
   "version": "0.4.0-rc.10",
   "description": "Dude CLI",
   "bin": {
-    "dude": "./.output/index.mjs"
+    "dude": "./dist/index.mjs"
   },
   "scripts": {
-    "dev": "cti dev",
-    "build": "cti build",
+    "dev": "tsup --watch",
+    "build": "tsup",
     "test": "vitest"
   },
   "author": "zekun.jin",
@@ -26,6 +26,7 @@
     "nunjucks": "^3.2.4",
     "pathe": "^1.1.0",
     "semver": "^7.5.4",
+    "unimport": "^3.7.1",
     "yaml": "^2.1.3"
   },
   "devDependencies": {
