@@ -16,7 +16,6 @@
     "c12": "^1.4.1",
     "citty": "^0.1.4",
     "consola": "^3.2.3",
-    "ctizen": "link:..\\ctizen",
     "dayjs": "^1.11.7",
     "destr": "^2.0.0",
     "fs-extra": "^11.1.0",
