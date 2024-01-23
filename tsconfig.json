@@ -19,6 +19,6 @@
     "skipDefaultLibCheck": true,
     "noUnusedLocals": true
   },
-  "include": ["commands/**/*", "utils/**/*", "types.d.ts", "unimport.d.ts"],
+  "include": ["src/**/*", "types.d.ts", "unimport.d.ts"],
   "exclude": ["node_modules", "**/dist"]
 }

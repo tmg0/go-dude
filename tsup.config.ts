@@ -17,7 +17,8 @@ const PRESETS = [
   { from: 'mlly', imports: ['resolvePath'] },
   { from: 'destr', imports: ['destr'] },
   { from: 'destr', imports: ['destr'] },
-  { from: 'nanoid', imports: ['nanoid'] }
+  { from: 'nanoid', imports: ['nanoid'] },
+  { from: 'citty', imports: ['defineCommand', 'runMain'] }
 ]
 
 export default defineConfig(options => ({
@@ -30,7 +31,7 @@ export default defineConfig(options => ({
       dts: true,
       imports: [...IMPORTS],
       presets: [...PRESETS],
-      dirs: ['./src']
+      dirs: ['./src/**/*']
     })
   ]
 }))

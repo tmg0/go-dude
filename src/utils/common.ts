@@ -1,7 +1,7 @@
 import { exec } from 'node:child_process'
 import { Client } from 'node-scp'
 import { NodeSSH } from 'node-ssh'
-import { name, version } from '../package.json'
+import { name, version } from '../../package.json'
 
 export const isString = (value: any): value is string => typeof value === 'string'
 
