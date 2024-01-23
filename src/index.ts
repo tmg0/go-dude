@@ -8,8 +8,8 @@ const main = defineCommand({
     build: import('./commands/build').then(r => r.default),
     check: import('./commands/check').then(r => r.default),
     load: import('./commands/load').then(r => r.default),
-    node: import('./commands/node').then(r => r.default),
-    push: import('./commands/push').then(r => r.default)
+    push: import('./commands/push').then(r => r.default),
+    _node: import('./commands/_node').then(r => r.default)
   }
 })
 
