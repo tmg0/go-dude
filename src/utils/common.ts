@@ -1,4 +1,5 @@
 import { exec } from 'node:child_process'
+import { basename } from 'node:path'
 import { Client } from 'node-scp'
 import { NodeSSH } from 'node-ssh'
 import { name, version } from '../../package.json'
@@ -69,8 +70,12 @@ export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
 
 export const execBuildScript = async (config: DudeConfig) => {
   if (!config.build.script) { return }
-  if (await isNodeProject()) { await execAsync('node -v') }
-  await execAsync(config.build.script)
+  let _script = config.build.script
+  if (await isNodeProject() && await hasVolta() && await hasDeclaredVoltaNodeVersion()) {
+    const v = await getNodeVersion()
+    _script = `volta run --node ${v} ${_script}`
+  }
+  await execAsync(_script)
   consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
 }
 
@@ -134,4 +139,21 @@ export const ensureFile = (path: string) => async (ssh?: NodeSSH) => {
 
 export const isNodeProject = (): Promise<boolean> => {
   return fse.pathExists(join(process.cwd(), 'package.json'))
+}
+
+export const getNodeVersion = async () => {
+  if (!await hasVolta()) { return execAsync('node -v') }
+
+  const stdout = await execAsync('volta which node', { output: false })
+  const path = resolve(stdout)
+  return basename(dirname(path))
+}
+
+export const hasVolta = async () => {
+  return !!await execAsync('volta --version', { output: false })
+}
+
+export const hasDeclaredVoltaNodeVersion = async () => {
+  const path = join(process.cwd(), 'package.json')
+  return (await fse.readJson(path))?.volta
 }

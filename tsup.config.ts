@@ -10,7 +10,7 @@ const IMPORTS = [
 ]
 
 const PRESETS = [
-  { from: 'pathe', imports: ['dirname', 'join'] },
+  { from: 'pathe', imports: ['dirname', 'join', 'resolve'] },
   { from: 'pathe/utils', imports: ['filename'] },
   { from: 'consola/utils', imports: ['colors'] },
   { from: 'c12', imports: ['loadConfig'] },
