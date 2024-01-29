@@ -205,13 +205,13 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
 }
 
 export const dockerVersion = async () => {
-  const stdout = await execAsync('docker version --format \'{{json .}}\'', { console: false })
+  const stdout = await execAsync('docker version --format \'{{json .}}\'', { output: false })
   const { Server: { Version } } = destr<DockerVersion>(stdout)
   return Version
 }
 
 export const serviceDockerVersion = async (ssh: NodeSSH) => {
-  const stdout = await sshExecAsync(ssh, 'docker version --format \'{{json .}}\'', { console: false })
+  const stdout = await sshExecAsync(ssh, 'docker version --format \'{{json .}}\'', { output: false })
   const { Server: { Version } } = destr<DockerVersion>(stdout)
   return Version
 }
@@ -236,13 +236,13 @@ export const serviceDockerRun = async (ssh: NodeSSH, config: DudeConfig, name: s
 
 export const dockerPs = (name: string) => async (ssh?: NodeSSH) => {
   if (!ssh) { return [] }
-  const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'', { console: false })
+  const stdout = await sshExecAsync(ssh, 'docker ps --format \'{{json .}}\'', { output: false })
   return stdout.split('\n').map(item => destr<DockerPs>(item)).filter(Boolean).filter(({ Names }) => Names?.includes(name)) || []
 }
 
 export const isDockerRunning = async () => {
   try {
-    await execAsync('docker info', { console: false })
+    await execAsync('docker info', { output: false })
   } catch {
     throw new Error('Docker engine is not running.')
   }

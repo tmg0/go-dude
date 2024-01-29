@@ -28,7 +28,7 @@ export const kubeExecAsync = async (ssh: NodeSSH, conf: DudeConfig, str: string)
 export const kubeGetPo = (conf: DudeConfig, selectors: string[]) => async (ssh?: NodeSSH) => {
   if (!ssh) { return [] }
   const pods: K8sContainerStatus[] = []
-  const stdout = await sshExecAsync(ssh, `kubectl get po -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o json`, { console: false })
+  const stdout = await sshExecAsync(ssh, `kubectl get po -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o json`, { output: false })
   destr<KubectlGetPo>(stdout).items.forEach(({ status }) => {
     status.containerStatuses.forEach(c => pods.push(c))
   })

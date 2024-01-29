@@ -7,10 +7,11 @@ export const isString = (value: any): value is string => typeof value === 'strin
 
 export const readName = async (config: DudeConfig): Promise<string> => {
   if (config.name) { return config.name }
-  const path = join(process.cwd(), 'package.json')
-
-  const name = (await fse.readJson(path))?.name
-  if (name) { return name }
+  if (await isNodeProject()) {
+    const path = join(process.cwd(), 'package.json')
+    const name = (await fse.readJson(path))?.name
+    if (name) { return name }
+  }
 
   throw new Error('Please declare a project name in config file or package.json.')
 }
@@ -31,7 +32,7 @@ export const readConf = async (path = process.cwd()) => {
   return config
 }
 
-export const execAsync = (cmd: string, options: { console?: boolean } = { console: true }): Promise<string> => {
+export const execAsync = (cmd: string, options: { output?: boolean } = { output: true }): Promise<string> => {
   return new Promise((resolve, reject) => {
     const p = exec(cmd, (error, stdout) => {
       if (error) {
@@ -41,7 +42,7 @@ export const execAsync = (cmd: string, options: { console?: boolean } = { consol
       resolve(stdout)
     })
 
-    if (options.console) {
+    if (options.output) {
       p.stdout?.pipe(process.stdout)
     }
   })
@@ -68,6 +69,7 @@ export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
 
 export const execBuildScript = async (config: DudeConfig) => {
   if (!config.build.script) { return }
+  if (await isNodeProject()) { await execAsync('node -v') }
   await execAsync(config.build.script)
   consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
 }
@@ -88,7 +90,7 @@ export const backupDockerComposeFile = async (ssh: NodeSSH, config: DudeConfig) 
 
 export const checkVersion = (): Promise<void> => {
   return new Promise((resolve) => {
-    execAsync(`npm view ${name} --json`, { console: false }).then((stdout) => {
+    execAsync(`npm view ${name} --json`, { output: false }).then((stdout) => {
       const json = destr<NpmView>(stdout)
 
       if (version !== json.version) {
@@ -128,4 +130,8 @@ export const ensureFile = (path: string) => async (ssh?: NodeSSH) => {
   if (!exist) {
     await sshExecAsync(ssh, `touch ${path}`)
   }
+}
+
+export const isNodeProject = (): Promise<boolean> => {
+  return fse.pathExists(join(process.cwd(), 'package.json'))
 }
