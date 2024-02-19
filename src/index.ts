@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-import { defineCommand, runMain } from 'citty'
+import { defineCommand, runMain as _runMain } from 'citty'
 import { description, name, version } from '../package.json'
 
 const main = defineCommand({
@@ -12,4 +11,4 @@ const main = defineCommand({
   }
 })
 
-runMain(main)
+export const runMain = () => _runMain(main)

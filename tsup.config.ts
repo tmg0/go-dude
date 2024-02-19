@@ -24,6 +24,7 @@ const PRESETS = [
 export default defineConfig(options => ({
   entry: ['./src'],
   format: ['esm'],
+  dts: true,
   minify: !options.watch,
   esbuildPlugins: [
     Unimport.esbuild({

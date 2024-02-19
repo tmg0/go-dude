@@ -3,7 +3,7 @@
   "version": "0.4.0-rc.12",
   "description": "Dude CLI",
   "bin": {
-    "dude": "./dist/index.mjs"
+    "dude": "./bin/dude.mjs"
   },
   "scripts": {
     "dev": "tsup --watch",
