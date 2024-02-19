@@ -22,7 +22,7 @@ const PRESETS = [
 ]
 
 export default defineConfig(options => ({
-  entry: ['./src'],
+  entry: ['./src/index.ts'],
   format: ['esm'],
   dts: true,
   minify: !options.watch,
