@@ -43,7 +43,7 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
     platformOption = `--platform ${platform}`
   }
 
-  rpc.runDockerCommand?.(script, [
+  await rpc.runDockerCommand?.(script, [
     platform && isSupportBuildx ? 'build' : '',
     exist ? '-f' : '',
     exist ? path : '',
