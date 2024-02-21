@@ -37,13 +37,13 @@ export default defineCommand({
     const config = await readConf(option.config)
     const name = await readName(config)
 
-    if (config.build?.script) { await execBuildScript(config) }
-
     let tag = option?.tag
 
     if (!tag) {
       tag = await generteImageTagFromGitCommitHash()
     }
+
+    if (config.build?.script) { await execBuildScript(config) }
 
     let image: string | undefined = await dockerBuild(name, tag, option?.platform)
 
