@@ -1,6 +1,6 @@
 import { defineCommand, runMain as _runMain } from 'citty'
 import { description, version } from '../package.json'
-import { checkVersion } from './utils/npm'
+import { checkUpdates } from './utils/npm'
 
 const main = defineCommand({
   meta: { name: 'dude', version, description },
@@ -11,7 +11,7 @@ const main = defineCommand({
     push: import('./commands/push').then(r => r.default)
   },
   async setup () {
-    await checkVersion()
+    await checkUpdates()
   }
 })
 

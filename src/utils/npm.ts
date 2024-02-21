@@ -24,7 +24,7 @@ export const checkForUpdateOf = async (name: string, current?: string) => {
   }
 }
 
-export const checkVersion = async () => {
+export const checkUpdates = async () => {
   const { name, current, latest, needsUpdate } = await checkForUpdateOf(packageJson.name)
   if (needsUpdate) {
     consola.box(`Update available! ${colors.red(current)} → ${colors.green(latest)}.\nRun "${colors.magenta(`npm install -g ${name}`)}" to update.`)
