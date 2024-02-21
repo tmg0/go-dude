@@ -13,7 +13,7 @@ export const checkForUpdateOf = async (name: string, current?: string) => {
     latest = manifest['dist-tags'].latest
     needsUpdate = latest !== current && semver.lt(current, latest)
   } catch {
-    consola.warn(`Cannot fetch the version of ${name} by npm.`)
+    consola.warn(`Cannot fetch the last version of ${name} by npm.`)
   }
 
   return {

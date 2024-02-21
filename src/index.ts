@@ -1,6 +1,7 @@
 import { defineCommand, runMain as _runMain } from 'citty'
 import { description, version } from '../package.json'
 import { checkUpdates } from './utils/npm'
+import { setupRPC } from './server-rpc'
 
 const main = defineCommand({
   meta: { name: 'dude', version, description },
@@ -12,6 +13,7 @@ const main = defineCommand({
   },
   async setup () {
     await checkUpdates()
+    setupRPC()
   }
 })
 

@@ -1,4 +1,6 @@
 import { NodeSSH } from 'node-ssh'
+import { rpc } from '../../server-rpc'
+import { type DockerCommandType } from '../../server-rpc/docker'
 
 /**
  * Check if have repo in dude config file.
@@ -25,29 +27,32 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
 
   const path = await resolvePath('../../Dockerfile', { url: import.meta.url })
 
-  let cmd = 'docker'
+  let script: DockerCommandType = 'build'
   let platformOption = ''
+  let isSupportBuildx = false
 
   if (platform) {
     const version = await dockerVersion()
-    const isSupportBuildx = semver.gt(version, '19.3.0')
+    isSupportBuildx = semver.gt(version, '19.3.0')
 
     if (!isSupportBuildx) { throw new Error('Local docker version do not support buildx.') }
 
     consola.info(`build docker image for ${platform}`)
 
-    cmd = 'docker buildx'
+    script = 'buildx'
     platformOption = `--platform ${platform}`
   }
 
-  let exec = exist ? `${cmd} build -t ${img} . ${platformOption}` : `${cmd} build -f ${path} -t ${img} . ${platformOption}`
-
-  exec += '--no-cache'
-
-  consola.info(exec)
-  consola.info('building...')
-
-  await execAsync(exec)
+  rpc.runDockerCommand?.(script, [
+    platform && isSupportBuildx ? 'build' : '',
+    exist ? '-f' : '',
+    exist ? path : '',
+    '-t',
+    img,
+    '.',
+    platformOption,
+    '--no-cache'
+  ])
   consola.success(`Docker build complete. Image: ${img}`)
   return img
 }

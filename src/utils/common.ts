@@ -1,4 +1,5 @@
 import { exec } from 'node:child_process'
+import { execa } from 'execa'
 import { clean, valid } from 'semver'
 import { Client } from 'node-scp'
 import { NodeSSH } from 'node-ssh'
@@ -71,11 +72,11 @@ export const uploadImage = (config: DudeConfig, _name: string, tag: string) => {
 export const execBuildScript = async (config: DudeConfig) => {
   if (!config.build.script) { return }
   let _script = config.build.script
-  if (await isNodeProject() && await hasVolta() && await hasDeclaredVoltaNodeVersion()) {
+  if (await isNodeProject() && await hasVolta()) {
     const v = await getNodeVersion()
     if (v) { _script = `volta run --node ${v} ${_script}` }
   }
-  await execAsync(_script)
+  await execa(_script, { stdio: 'inherit' })
   consola.success(`Build script complete. The ${config.build.output} directory is ready to be deployed.`)
 }
 
@@ -142,12 +143,12 @@ export const isNodeProject = (): Promise<boolean> => {
 }
 
 export const getNodeVersion = async () => {
-  let _v = execAsync('node -v')
-  if (!await hasVolta()) { return _v }
+  const { stdout: defaults } = execa('node', ['--version'])
+  if (!await hasVolta()) { return defaults }
 
-  const stdout = await execAsync('volta which node', { output: false })
-  const version = await execAsync(`${stdout} --version`, { output: false })
-  if (!valid(version)) { return _v }
+  const { stdout: nodeImage } = await execa('volta which node')
+  const { stdout: version } = await execa(nodeImage.trim(), ['--version'])
+  if (!valid(version)) { return defaults }
   return clean(version)
 }
 
