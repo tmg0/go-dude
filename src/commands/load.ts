@@ -5,7 +5,6 @@ export default defineCommand({
     tag: { type: 'string', alias: 't', description: 'Target image tag.' }
   },
   async run ({ args }) {
-    await checkVersion()
     const config = await readConf(args.config)
     const name = await readName(config)
     const ssh = await sshConnect(config)

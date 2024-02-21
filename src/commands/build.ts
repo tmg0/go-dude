@@ -33,7 +33,6 @@ export default defineCommand({
     tag: { type: 'string', alias: 't', description: 'Named image tag without git hash.' }
   },
   async run ({ args: option }) {
-    await checkVersion()
     await isDockerRunning()
     const config = await readConf(option.config)
     const name = await readName(config)

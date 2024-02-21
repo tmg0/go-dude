@@ -28,8 +28,7 @@ export default defineCommand({
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
     tag: { type: 'boolean', alias: 't', description: 'Only replace image tag.' }
   },
-  async run ({ args }) {
-    await checkVersion()
+  run ({ args }) {
     run(args.name, args)
   }
 })

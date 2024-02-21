@@ -4,7 +4,6 @@ export default defineCommand({
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' }
   },
   async run ({ args }) {
-    await checkVersion()
     const config = await readConf(args.config)
     const name = await readName(config)
     const ssh = await sshConnect(config)
