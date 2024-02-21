@@ -1,12 +1,11 @@
 import { execa } from 'execa'
 import type { NodeSSH } from 'node-ssh'
 
-export type DockerCommandType = 'build' | 'buildx'
+export type DockerCommandType = 'build' | 'buildx' | 'push' | 'login'
 
 export const setupDockerRPC = () => {
   const getDockerCommand = (command: DockerCommandType, args: string[]): string[] => {
     return [
-      'docker',
       command,
       ...args
     ].filter(Boolean)
@@ -18,8 +17,7 @@ export const setupDockerRPC = () => {
 
   const runDockerCommand = (command: DockerCommandType, args: string[], options: { ssh?: NodeSSH } = {}) => {
     if (options.ssh) { return }
-    const script = getDockerCommand(command, args)
-    return execa(script.join(' '), { stdio: 'inherit' })
+    return execa('docker', getDockerCommand(command, args), { stdio: 'inherit' })
   }
 
   return {

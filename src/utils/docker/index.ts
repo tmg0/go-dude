@@ -110,7 +110,7 @@ export const dockerLogin = async (config: DudeConfig) => {
   if (!hasRepos(config)) { return }
 
   const login = async (repo: ImageRepo) => {
-    await execAsync(`docker login -u ${repo.username} -p ${repo.password} ${repo.host}`)
+    await rpc.runDockerCommand?.('login', ['-u', repo.username, '-p', repo.password, repo.host])
     consola.success(`Docker login complete. Host: ${repo.host}`)
   }
 
@@ -124,7 +124,7 @@ export const dockerPush = async (config: DudeConfig, name: string, tag: string) 
 
   const push = async (repo: ImageRepo) => {
     const path = join(repo.host, repo.project, `${name}:${tag}`)
-    await execAsync(`docker push ${path}`)
+    await rpc.runDockerCommand?.('push', [path])
     images.push(path)
     consola.success(`Docker push complete. Repo: ${path}`)
   }
