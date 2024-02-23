@@ -1,6 +1,5 @@
 import { NodeSSH } from 'node-ssh'
-import { rpc } from '../../server-rpc'
-import { type DockerCommandType } from '../../server-rpc/docker'
+import { type DockerCommandType, rpc } from '../../server-rpc'
 
 /**
  * Check if have repo in dude config file.
