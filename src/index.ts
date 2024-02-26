@@ -8,7 +8,7 @@ const main = defineCommand({
   subCommands: {
     build: import('./commands/build').then(r => r.default),
     push: import('./commands/push').then(r => r.default),
-    describe: import('./commands/describe').then(r => r.default)
+    inspect: import('./commands/inspect').then(r => r.default)
   },
   async setup () {
     await checkUpdates()

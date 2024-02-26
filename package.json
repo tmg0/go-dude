@@ -1,6 +1,6 @@
 {
   "name": "go-dude",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Dude CLI",
   "bin": {
     "dude": "./bin/dude.mjs"
