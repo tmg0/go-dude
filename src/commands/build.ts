@@ -1,4 +1,4 @@
-import { run as push } from './push'
+import pushCommand from './push'
 
 const selectImage = async (config: DudeConfig, images?: string[]) => {
   if (!config?.ssh?.host) { return }
@@ -22,7 +22,9 @@ const pushImage = async (config: DudeConfig, image: string | undefined, option: 
   const confirmed = await consola.prompt(`Push ${image} to ${config.ssh.host}?`, {
     type: 'confirm'
   })
-  if (confirmed) { await push(image, { ...option, tag: undefined }) }
+  if (confirmed) {
+    runCommand(pushCommand, { ...option, name: image, tag: undefined })
+  }
 }
 
 export default defineCommand({

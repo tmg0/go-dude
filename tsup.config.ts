@@ -18,7 +18,7 @@ const PRESETS = [
   { from: 'destr', imports: ['destr'] },
   { from: 'destr', imports: ['destr'] },
   { from: 'nanoid', imports: ['nanoid'] },
-  { from: 'citty', imports: ['defineCommand', 'runMain'] }
+  { from: 'citty', imports: ['defineCommand', 'runMain', 'runCommand'] }
 ]
 
 export default defineConfig(options => ({
