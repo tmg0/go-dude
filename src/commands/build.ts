@@ -23,7 +23,7 @@ const pushImage = async (config: DudeConfig, image: string | undefined, option: 
     type: 'confirm'
   })
   if (confirmed) {
-    runCommand(pushCommand, { ...option, name: image, tag: undefined })
+    runCommand(pushCommand, { rawArgs: [image], data: { ...option, tag: undefined } })
   }
 }
 

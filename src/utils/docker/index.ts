@@ -1,5 +1,6 @@
 import { NodeSSH } from 'node-ssh'
-import { type DockerCommandType, rpc } from '../../server-rpc'
+import { type DockerCommandType } from '../../server-rpc/docker'
+import { rpc } from '../../server-rpc'
 
 /**
  * Check if have repo in dude config file.
@@ -203,7 +204,8 @@ export const replaceImage = async (ssh: NodeSSH, config: DudeConfig, name: strin
   }
 
   await ssh.execCommand(`sed -i 's|${oldValue}|${newValue}|g' ${config.dockerCompose.file}`)
-  consola.success(`Replace image from ${oldValue} to ${newValue}`)
+
+  consola.success(`Replace the image from ${oldValue.split('/').at(-1)} to ${newValue.split('/').at(-1)}`)
 
   await serviceDockerRun(ssh, config, name)
 }
