@@ -32,6 +32,7 @@ export default defineCommand({
   args: {
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' },
     platform: { type: 'string', alias: 'p', description: 'Declare target image build platform.' },
+    clear: { type: 'boolean', description: 'Remove the images after build completed.' },
     tag: { type: 'string', alias: 't', description: 'Named image tag without git hash.' }
   },
   async run ({ args: option }) {
@@ -53,7 +54,9 @@ export default defineCommand({
       await dockerTag(config, name, tag)
       await dockerLogin(config)
       const images = await dockerPush(config, name, tag)
-      await dockerRemoveImage(config, name, tag)()
+      if (!option.clear) {
+        await dockerRemoveImage(config, name, tag)()
+      }
 
       image = await selectImage(config, images)
       await pushImage(config, image, option)
@@ -62,8 +65,12 @@ export default defineCommand({
     }
 
     await dockerSaveImage(name, tag)
-    await dockerRemoveImage(config, name, tag)()
+    if (!option.clear) {
+      await dockerRemoveImage(config, name, tag)()
+    }
 
     await pushImage(config, image, option)
+
+    return image
   }
 })
