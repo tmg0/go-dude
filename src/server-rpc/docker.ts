@@ -1,7 +1,7 @@
 import { execa } from 'execa'
 import type { NodeSSH } from 'node-ssh'
 
-export type DockerCommandType = 'build' | 'buildx' | 'push' | 'login'
+export type DockerCommandType = 'build' | 'buildx' | 'push' | 'login' | 'image'
 
 export interface DockerBuildOptions {
   file?: string
@@ -14,6 +14,11 @@ export interface DockerBuildxOptions {
   tag?: string
   platform?: string
   noCache?: boolean
+}
+
+export interface DockerRemoveOptions {
+  force?: boolean
+  link?: string
 }
 
 export const setupDockerRPC = () => {
@@ -41,12 +46,17 @@ export const setupDockerRPC = () => {
     return runDockerCommand('buildx', ['build', '-f', options.file, '-t', options.tag, '--platform', options.platform, options.noCache ? '--no-cache' : ''])
   }
 
+  const dockerImageRm = (container: string | string[], options: DockerRemoveOptions = {}) => {
+    return runDockerCommand('image', ['rm', container, options.force ? '-f' : ''].flat())
+  }
+
   return {
     getDockerCommand,
     getDockerComposeCommand,
     runDockerCommand,
 
     dockerBuild,
-    dockerBuildx
+    dockerBuildx,
+    dockerImageRm
   }
 }

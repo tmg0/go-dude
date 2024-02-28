@@ -83,21 +83,16 @@ export const dockerRemoveImageTar = (_name: string, tag: string) => {
 }
 
 export const dockerRemoveImage = (config: DudeConfig, name: string, tag: string) => async (ssh?: NodeSSH) => {
-  if (!ssh) {
-    try {
-      await Promise.all([
-        execAsync(`docker image rm ${name}:${tag}`),
-        (() => {
-          if (!hasRepos(config)) { return [] }
-          return (config.repos as ImageRepo[]).map((repo) => {
-            return execAsync(`docker image rm ${repoTag(repo, name, tag)}`)
-          })
-        })()
-      ])
-      consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
-    } catch (error) {
-      consola.warn(error)
-    }
+  if (ssh) { return }
+  const remoteTags = (() => {
+    if (!hasRepos(config)) { return [] }
+    return (config.repos as ImageRepo[]).map(repo => repoTag(repo, name, tag))
+  })()
+  try {
+    await rpc.dockerImageRm?.([`${name}:${tag}`, ...remoteTags])
+    consola.success(`Local docker image remove complete. Image: ${name}:${tag}`)
+  } catch (error) {
+    consola.warn(error)
   }
 }
 
