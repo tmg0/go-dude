@@ -1,11 +1,13 @@
+import { useContext } from '../context'
+
 export default defineCommand({
   meta: { name: 'check', description: 'Check container status by ssh.' },
   args: {
     config: { type: 'string', alias: 'c', description: 'Declare dude config file.' }
   },
-  async run ({ args }) {
-    const config = await readConf(args.config)
-    const name = await readName(config)
+  async run () {
+    const { options: config } = useContext()
+    const name = config.name!
     const ssh = await sshConnect(config)
 
     if (config.dockerCompose) {

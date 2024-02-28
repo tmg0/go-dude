@@ -1,8 +1,10 @@
 import { NodeSSH } from 'node-ssh'
+import { DudeOptions } from '../types'
 
 const ssh = new NodeSSH()
 
-export const sshConnect = async (config: DudeConfig) => {
+export const sshConnect = async (config: DudeOptions) => {
+  if (!config?.ssh) { throw new Error('Remote SSH config is required.') }
   await ssh.connect({ ...config.ssh })
   consola.success(`SSH connect complete. Host: ${config.ssh.host}`)
   return ssh

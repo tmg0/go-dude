@@ -1,6 +1,8 @@
 import { NodeSSH } from 'node-ssh'
+import { DudeOptions } from 'src/types'
 
-export const deploymentLabelSelectors = async (ssh: NodeSSH, conf: DudeConfig) => {
+export const deploymentLabelSelectors = async (ssh: NodeSSH, conf: DudeOptions) => {
+  if (!conf?.k8s) { throw new Error('K8s config is required.') }
   const { stdout } = await ssh.execCommand(`kubectl get deployment ${conf.k8s.deployment} -n ${conf.k8s.namespace} -o json`)
   try {
     const json = JSON.parse(stdout)
@@ -25,8 +27,9 @@ export const kubeExecAsync = async (ssh: NodeSSH, conf: DudeConfig, str: string)
   return stdout
 }
 
-export const kubeGetPo = (conf: DudeConfig, selectors: string[]) => async (ssh?: NodeSSH) => {
+export const kubeGetPo = (conf: DudeOptions, selectors: string[]) => async (ssh?: NodeSSH) => {
   if (!ssh) { return [] }
+  if (!conf.k8s) { return [] }
   const pods: K8sContainerStatus[] = []
   const stdout = await sshExecAsync(ssh, `kubectl get po -n ${conf.k8s.namespace} -l ${selectors.join(',')} -o json`, { output: false })
   destr<KubectlGetPo>(stdout).items.forEach(({ status }) => {
