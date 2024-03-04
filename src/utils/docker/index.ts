@@ -45,8 +45,8 @@ export const dockerBuild = async (name: string, tag: string, platform?: string) 
 
   await rpc.runDockerCommand?.(script, [
     platform && isSupportBuildx ? 'build' : '',
-    exist ? '-f' : '',
-    exist ? path : '',
+    !exist ? '-f' : '',
+    !exist ? path : '',
     '-t',
     img,
     '.',
