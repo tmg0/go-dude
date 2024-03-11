@@ -38,9 +38,11 @@
     "@types/pacote": "^11.1.8",
     "@types/semver": "^7.5.0",
     "eslint": "^8.28.0",
+    "oxlint": "^0.2.13",
     "taze": "^0.13.3",
     "tsup": "^8.0.1",
     "typescript": "^4.9.5",
+    "unplugin-oxlint": "^0.2.0-rc.1",
     "vitest": "^0.28.5"
   }
 }

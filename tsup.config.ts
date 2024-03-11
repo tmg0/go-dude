@@ -1,5 +1,6 @@
 import { defineConfig } from 'tsup'
 import Unimport from 'unimport/unplugin'
+import Oxlint from 'unplugin-oxlint/esbuild'
 
 const IMPORTS = [
   { name: 'default', as: 'consola', from: 'consola' },
@@ -32,6 +33,11 @@ export default defineConfig(options => ({
       imports: [...IMPORTS],
       presets: [...PRESETS],
       dirs: ['./src/**/*']
+    }),
+
+    Oxlint({
+      path: 'src',
+      fix: true
     })
   ]
 }))
